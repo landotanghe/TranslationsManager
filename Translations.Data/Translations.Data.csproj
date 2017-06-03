@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{604869B0-39A7-4CBD-A8FD-52E1770EC182}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>TranslationsStore</RootNamespace>
-    <AssemblyName>TranslationsStore</AssemblyName>
+    <RootNamespace>Translations.Data</RootNamespace>
+    <AssemblyName>Translations.Data</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -70,6 +70,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NodeDefinitions\DownstreamEdgeAttribute.cs" />
+    <Compile Include="NodeDefinitions\PropertyAttribute.cs" />
+    <Compile Include="NodeDefinitions\UpstreamEdgeAttribute.cs" />
+    <Compile Include="NodeDefinitions\Node.cs" />
+    <Compile Include="NodeDefinitions\NodeAttribute.cs" />
+    <Compile Include="Nodes\AbstractWord.cs" />
+    <Compile Include="Nodes\Category.cs" />
+    <Compile Include="Nodes\Translation.cs" />
+    <Compile Include="Nodes\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TranslationsStore.cs" />
   </ItemGroup>

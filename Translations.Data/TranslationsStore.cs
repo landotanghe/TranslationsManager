@@ -4,6 +4,9 @@ using System;
 using Translator.Shared;
 using System.Linq;
 using System.Linq.Expressions;
+using Translations.Data.Nodes;
+using Translations.Data.NodeDefinitions;
+using System.Reflection;
 
 namespace Translations.Data
 {
@@ -27,6 +30,70 @@ namespace Translations.Data
             }
             
              Link(word, translation, language);
+        }
+
+        private class CypherMatchBuilder
+        {
+            private string _variableName;
+            private List<string> _labels;
+            private Dictionary<string, string> _propertyArguments;
+
+            public CypherMatchBuilder(string variableName)
+            {
+                _labels = new List<string>();
+                _variableName = variableName;
+                _propertyArguments = new Dictionary<string, string>();
+            }
+
+            public CypherMatchBuilder Match(Type type)
+            {
+                var labels = type.GetCustomAttributes(true).OfType<NodeAttribute>().Select(n => n.GetLabel());
+                _labels.AddRange(labels);
+                _labels = _labels.Distinct().ToList();
+
+                return this;
+            }
+
+            public CypherMatchBuilder PropertyIs(PropertyInfo property, string argumentName)
+            {
+                var nodeProperty = (PropertyAttribute) property.GetCustomAttribute(typeof(PropertyAttribute));
+                var propertyName = nodeProperty.GetName();
+                _propertyArguments.Add(propertyName, argumentName);
+
+                return this;
+            }
+
+            public string ToString()
+            {
+                var labelsFilter = String.Join("", _labels.Select(label => $":{label}"));
+                var propertiesFilter = _propertyArguments.Any() ? "{" + String.Join(",", _propertyArguments.Select(pv => pv.Key + ":{" + pv.Value +"}" ))+ "}" : String.Empty;
+
+                return "MATCH (" + _variableName + labelsFilter + propertiesFilter + ")";
+            }
+
+        }
+
+        public Word GetWord(string word)
+        {
+            var variableName = "myWord";
+            var argument = Arg("wordValue", word);
+
+            var matchBuilder = new CypherMatchBuilder(variableName);
+
+            var match = matchBuilder
+                .Match(typeof(Word))
+                .PropertyIs(typeof(Word).GetProperty("Name"), argument.Name)
+                .ToString();
+
+            var query = $"{match} return {variableName}.name, {variableName}.language";
+
+            var result = ExecueQuery(query, new []{ argument });
+            var wordRow = result.First();
+            return new Word
+            {
+                Name = (string) wordRow[0],
+                Language = (string) wordRow[1]
+            };
         }
 
         public void Categorise(string category, params string[] words)
@@ -149,7 +216,7 @@ namespace Translations.Data
 
         private IStatementResult ExecueQuery(string query, Dictionary<string, object> arguments)
         {
-            using (var driver = GraphDatabase.Driver("bolt://localhost:7687", AuthTokens.Basic("neo4j", "35472414")))
+            using (var driver = GraphDatabase.Driver("bolt://localhost:7687", AuthTokens.Basic("neo4j", "test")))
             using (var session = driver.Session())
             {
                 var result = session.Run(query, arguments);

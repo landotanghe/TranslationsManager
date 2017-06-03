@@ -15,7 +15,22 @@ namespace TranslatorStore
 
         public void Run()
         {
-            using(var translator = new GoogleTranslateApi())
+            store.AddTranslation("koe", "cow", Language.English);
+            store.AddTranslation("schaap", "sheep", Language.English);   
+            store.AddTranslation("kip", "chicken", Language.English);
+
+            store.Categorise("dieren", "koe", "schaap", "kip");
+
+            var word = store.GetWord("koe");
+            var word2 = store.GetWord("koetje");
+
+            
+            //RunLoop();
+        }
+
+        private void RunLoop()
+        {
+            using (var translator = new GoogleTranslateApi())
             {
                 //store.AddTranslation("koe", "cow", Language.English);
                 //store.AddTranslation("schaap", "sheep", Language.English);
@@ -35,7 +50,8 @@ namespace TranslatorStore
                     try
                     {
                         InputCycle(translator);
-                    }catch(Exception ex)
+                    }
+                    catch (Exception ex)
                     {
                         Console.WriteLine(":( command could not be processed", ex);
                     }

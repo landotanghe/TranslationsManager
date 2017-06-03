@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{5251F1AC-0C1E-4759-8E7E-53351FF28936}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>TranslatorStore</RootNamespace>
-    <AssemblyName>TranslatorStore</AssemblyName>
+    <RootNamespace>Translations.Exe</RootNamespace>
+    <AssemblyName>Translations.Exe</AssemblyName>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -75,6 +75,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Translations.Data\Translations.Data.csproj">
+      <Project>{604869b0-39a7-4cbd-a8fd-52e1770ec182}</Project>
+      <Name>Translations.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Translations.Shared\Translations.Shared.csproj">
       <Project>{70ebb18b-66dc-4a80-a2fa-285e5661b2fa}</Project>
       <Name>Translations.Shared</Name>
@@ -82,10 +86,6 @@
     <ProjectReference Include="..\Translations.Translator\Translations.Translator.csproj">
       <Project>{005c836b-8170-41e6-b940-a1bc10923a07}</Project>
       <Name>Translations.Translator</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TranslationsStore\Translations.Data.csproj">
-      <Project>{604869b0-39a7-4cbd-a8fd-52e1770ec182}</Project>
-      <Name>Translations.Data</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
