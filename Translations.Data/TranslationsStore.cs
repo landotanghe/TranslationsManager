@@ -54,6 +54,17 @@ namespace Translations.Data
                 return this;
             }
 
+
+            public CypherMatchBuilder PropertyIs(Expression<Func<Word, object>> memberExpression, string argumentName)
+            {
+                var member = (MemberExpression) memberExpression.Body;
+                var nodeProperty = (PropertyAttribute)member.Member.GetCustomAttribute(typeof(PropertyAttribute));
+                var propertyName = nodeProperty.GetName();
+                _propertyArguments.Add(propertyName, argumentName);
+
+                return this;
+            }
+
             public CypherMatchBuilder PropertyIs(PropertyInfo property, string argumentName)
             {
                 var nodeProperty = (PropertyAttribute) property.GetCustomAttribute(typeof(PropertyAttribute));
@@ -70,7 +81,6 @@ namespace Translations.Data
 
                 return "MATCH (" + _variableName + labelsFilter + propertiesFilter + ")";
             }
-
         }
 
         public Word GetWord(string word)
@@ -82,13 +92,17 @@ namespace Translations.Data
 
             var match = matchBuilder
                 .Match(typeof(Word))
-                .PropertyIs(typeof(Word).GetProperty("Name"), argument.Name)
+                .PropertyIs((Word w) => w.Name, argument.Name)
                 .ToString();
 
             var query = $"{match} return {variableName}.name, {variableName}.language";
 
             var result = ExecueQuery(query, new []{ argument });
-            var wordRow = result.First();
+            var wordRow = result.FirstOrDefault();
+
+            if (wordRow == null)
+                return null;
+
             return new Word
             {
                 Name = (string) wordRow[0],
