@@ -70,6 +70,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CypherBuilders\CypherMatchBuilder.cs" />
+    <Compile Include="CypherBuilders\ReflectionHelpers.cs" />
+    <Compile Include="CypherBuilders\CypherReturnBuilder.cs" />
     <Compile Include="NodeDefinitions\DownstreamEdgeAttribute.cs" />
     <Compile Include="NodeDefinitions\PropertyAttribute.cs" />
     <Compile Include="NodeDefinitions\UpstreamEdgeAttribute.cs" />

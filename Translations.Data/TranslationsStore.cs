@@ -1,12 +1,9 @@
 ﻿using System.Collections.Generic;
 using Neo4j.Driver.V1;
-using System;
 using Translator.Shared;
 using System.Linq;
-using System.Linq.Expressions;
 using Translations.Data.Nodes;
-using Translations.Data.NodeDefinitions;
-using System.Reflection;
+using Translations.Data.CypherBuilders;
 
 namespace Translations.Data
 {
@@ -31,71 +28,24 @@ namespace Translations.Data
             
              Link(word, translation, language);
         }
-
-        private class CypherMatchBuilder
-        {
-            private string _variableName;
-            private List<string> _labels;
-            private Dictionary<string, string> _propertyArguments;
-
-            public CypherMatchBuilder(string variableName)
-            {
-                _labels = new List<string>();
-                _variableName = variableName;
-                _propertyArguments = new Dictionary<string, string>();
-            }
-
-            public CypherMatchBuilder Match(Type type)
-            {
-                var labels = type.GetCustomAttributes(true).OfType<NodeAttribute>().Select(n => n.GetLabel());
-                _labels.AddRange(labels);
-                _labels = _labels.Distinct().ToList();
-
-                return this;
-            }
-
-
-            public CypherMatchBuilder PropertyIs(Expression<Func<Word, object>> memberExpression, string argumentName)
-            {
-                var member = (MemberExpression) memberExpression.Body;
-                var nodeProperty = (PropertyAttribute)member.Member.GetCustomAttribute(typeof(PropertyAttribute));
-                var propertyName = nodeProperty.GetName();
-                _propertyArguments.Add(propertyName, argumentName);
-
-                return this;
-            }
-
-            public CypherMatchBuilder PropertyIs(PropertyInfo property, string argumentName)
-            {
-                var nodeProperty = (PropertyAttribute) property.GetCustomAttribute(typeof(PropertyAttribute));
-                var propertyName = nodeProperty.GetName();
-                _propertyArguments.Add(propertyName, argumentName);
-
-                return this;
-            }
-
-            public string ToString()
-            {
-                var labelsFilter = String.Join("", _labels.Select(label => $":{label}"));
-                var propertiesFilter = _propertyArguments.Any() ? "{" + String.Join(",", _propertyArguments.Select(pv => pv.Key + ":{" + pv.Value +"}" ))+ "}" : String.Empty;
-
-                return "MATCH (" + _variableName + labelsFilter + propertiesFilter + ")";
-            }
-        }
+        
 
         public Word GetWord(string word)
         {
             var variableName = "myWord";
             var argument = Arg("wordValue", word);
+            
+            var match = CypherMatchBuilder
+                            .Match(variableName, typeof(Word))
+                            .PropertyIs((Word w) => w.Name, argument.Name)
+                            .ToString();
 
-            var matchBuilder = new CypherMatchBuilder(variableName);
-
-            var match = matchBuilder
-                .Match(typeof(Word))
-                .PropertyIs((Word w) => w.Name, argument.Name)
+            var @return = CypherReturnBuilder.Create()
+                .AddMember(variableName, (Word w) => w.Name)
+                .AddMember(variableName, (Word w) => w.Language)
                 .ToString();
 
-            var query = $"{match} return {variableName}.name, {variableName}.language";
+            var query = $"{match}{@return}";
 
             var result = ExecueQuery(query, new []{ argument });
             var wordRow = result.FirstOrDefault();
