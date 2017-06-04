@@ -28,16 +28,18 @@ namespace Translations.Data
             
              Link(word, translation, language);
         }
-        
+
 
         public Word GetWord(string word)
         {
             var variableName = "myWord";
-            var argument = Arg("wordValue", word);
-            
+            //var argument = Arg("wordValue", word);
+
+            var argumentBuilder = new CypherArgumentBuilder();
+
             var match = CypherMatchBuilder
-                            .Match(variableName, typeof(Word))
-                            .PropertyIs((Word w) => w.Name, argument.Name)
+                            .Match<Word>(variableName, argumentBuilder)
+                            .Where((Word w) => w.Name == word) //, argument.Name)
                             .ToString();
 
             var @return = CypherReturnBuilder.Create()
@@ -47,7 +49,39 @@ namespace Translations.Data
 
             var query = $"{match}{@return}";
 
-            var result = ExecueQuery(query, new []{ argument });
+            var result = ExecueQuery(query, argumentBuilder.GetArguments());
+            var wordRow = result.FirstOrDefault();
+
+            if (wordRow == null)
+                return null;
+
+            return new Word
+            {
+                Name = (string)wordRow[0],
+                Language = (string)wordRow[1]
+            };
+        }
+
+        public Word GetWord2(string word)
+        {
+            var variableName = "myWord";
+            //var argument = Arg("wordValue", word);
+
+            var argumentBuilder = new CypherArgumentBuilder();
+            
+            var match = CypherMatchBuilder
+                            .Match<Word>(variableName, argumentBuilder)
+                            .Where((Word w) => w.Name == word) //, argument.Name)
+                            .ToString();
+
+            var @return = CypherReturnBuilder.Create()
+                .AddMember(variableName, (Word w) => w.Name)
+                .AddMember(variableName, (Word w) => w.Language)
+                .ToString();
+
+            var query = $"{match}{@return}";
+
+            var result = ExecueQuery(query, argumentBuilder.GetArguments());
             var wordRow = result.FirstOrDefault();
 
             if (wordRow == null)
@@ -164,14 +198,7 @@ namespace Translations.Data
                 Value = value
             };
         }
-
-        private class Argument
-        {
-            public string Name;
-            public object Value;
-        }
-
-        
+                
         private IStatementResult ExecueQuery(string query, params Argument[] arguments)
         {
             var dictionary = arguments.ToDictionary(arg => arg.Name, arg => arg.Value);

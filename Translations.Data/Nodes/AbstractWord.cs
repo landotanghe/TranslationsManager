@@ -2,7 +2,7 @@
 
 namespace Translations.Data.Nodes
 {
-    public abstract class AbstractWord : Node
+    public abstract class AbstractWord : INode
     {
         [Property(name:"name")]
         public string Name { get; set; }

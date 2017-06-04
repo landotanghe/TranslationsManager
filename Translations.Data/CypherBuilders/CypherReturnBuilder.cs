@@ -26,7 +26,7 @@ namespace Translations.Data.CypherBuilders
 
         public CypherReturnBuilder AddMember<T>(string variableName, Expression<Func<T, object>> memberExpression)
         {
-            var nodeProperty = ReflectionHelpers.GetCustomAttribute<PropertyAttribute, T>(memberExpression);
+            var nodeProperty = ReflectionHelpers.GetCustomAttributeForMember<PropertyAttribute, T>(memberExpression);
             var propertyName = nodeProperty.GetName();
             _propertiesToReturn.Add($"{variableName}.{propertyName}");
 

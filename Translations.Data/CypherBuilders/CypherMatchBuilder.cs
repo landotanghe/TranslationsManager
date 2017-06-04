@@ -12,17 +12,20 @@ namespace Translations.Data.CypherBuilders
         private string _variableName;
         private List<string> _labels;
         private Dictionary<string, string> _propertyArguments;
+        private CypherArgumentBuilder _argumentBuilder;
 
-        private CypherMatchBuilder(string variableName)
+        private CypherMatchBuilder(string variableName, CypherArgumentBuilder argumentNameBuilder)
         {
             _labels = new List<string>();
             _variableName = variableName;
+            _argumentBuilder = argumentNameBuilder;
             _propertyArguments = new Dictionary<string, string>();
         }
 
-        public static CypherMatchBuilder Match(string variableName, Type type)
+        public static CypherMatchBuilder Match<T>(string variableName, CypherArgumentBuilder argumentNameBuilder) where T : INode
         {
-            var matcher = new CypherMatchBuilder(variableName);
+            var matcher = new CypherMatchBuilder(variableName, argumentNameBuilder);
+            var type = typeof(T);
             return matcher.Match(type);
         }
 
@@ -37,8 +40,23 @@ namespace Translations.Data.CypherBuilders
 
         public CypherMatchBuilder PropertyIs<T>(Expression<Func<T, object>> memberExpression, string argumentName)
         {
-            var nodeProperty = ReflectionHelpers.GetCustomAttribute<PropertyAttribute, T>(memberExpression);
+            var nodeProperty = ReflectionHelpers.GetCustomAttributeForMember<PropertyAttribute, T>(memberExpression);
             var propertyName = nodeProperty.GetName();
+            _propertyArguments.Add(propertyName, argumentName);
+
+            return this;
+        }
+
+        public CypherMatchBuilder Where<T>(Expression<Func<T, bool>> whereExpression)
+        {
+            var binaryExpression = ((BinaryExpression)whereExpression.Body);
+            var nodeProperty = ReflectionHelpers.GetCustomAttributeForBoolean<PropertyAttribute, T>(whereExpression);
+            var propertyName = nodeProperty.GetName();
+
+            var valueExpression = (MemberExpression) binaryExpression.Right;
+            
+            var argumentName = _argumentBuilder.GetNextArgumentName();
+            _argumentBuilder.SetValue(argumentName, valueExpression.GetValue().ToString());
             _propertyArguments.Add(propertyName, argumentName);
 
             return this;

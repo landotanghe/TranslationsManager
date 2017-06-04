@@ -4,7 +4,7 @@ using Translations.Data.NodeDefinitions;
 namespace Translations.Data.Nodes
 {
     [Node(label: "Category")]
-    public class Category : Node
+    public class Category : INode
     {
         [UpstreamEdge(label: "IsPartOf")]
         public List<Word> Words { get; set; }
