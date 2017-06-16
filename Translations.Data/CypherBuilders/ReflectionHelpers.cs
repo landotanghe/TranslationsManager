@@ -6,6 +6,7 @@ namespace Translations.Data.CypherBuilders
 {
     public static class ReflectionHelpers
     {
+        // Retrieve the attribute added to the property
         public static Attr GetCustomAttributeForMember<Attr, T>(Expression<Func<T, object>> memberExpression) where Attr : Attribute
         {
             var member = (MemberExpression)memberExpression.Body;

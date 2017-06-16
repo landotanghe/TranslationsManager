@@ -22,7 +22,7 @@ namespace Translations.Data.CypherBuilders
             _propertyArguments = new Dictionary<string, string>();
         }
 
-        public static CypherMatchBuilder Match<T>(string variableName, CypherArgumentBuilder argumentNameBuilder) where T : INode
+        public static CypherMatchBuilder Match<T>(string variableName, CypherArgumentBuilder argumentNameBuilder) where T : IEntityNode
         {
             var matcher = new CypherMatchBuilder(variableName, argumentNameBuilder);
             var type = typeof(T);
@@ -38,6 +38,7 @@ namespace Translations.Data.CypherBuilders
             return this;
         }
 
+        /// Property should have the value indicated by the argument
         public CypherMatchBuilder PropertyIs<T>(Expression<Func<T, object>> memberExpression, string argumentName)
         {
             var nodeProperty = ReflectionHelpers.GetCustomAttributeForMember<PropertyAttribute, T>(memberExpression);
@@ -47,6 +48,8 @@ namespace Translations.Data.CypherBuilders
             return this;
         }
 
+        /// Property should comply with the simple boolean expression
+        /// right part should be the value, left part the argument
         public CypherMatchBuilder Where<T>(Expression<Func<T, bool>> whereExpression)
         {
             var binaryExpression = ((BinaryExpression)whereExpression.Body);

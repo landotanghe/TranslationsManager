@@ -1,6 +1,6 @@
 ﻿namespace Translations.Data.NodeDefinitions
 {
-    public interface INode
+    public interface IEntityNode
     {
     }
 }

@@ -29,8 +29,14 @@ namespace Translations.Data
              Link(word, translation, language);
         }
 
-
         public Word GetWord(string word)
+        {
+            return (new CypherQueryBuilder<Word>())
+                .Match(w => w.Name == word)
+                .FirstOrDefault();
+        }
+
+        public Word GetWord3(string word)
         {
             var variableName = "myWord";
             //var argument = Arg("wordValue", word);

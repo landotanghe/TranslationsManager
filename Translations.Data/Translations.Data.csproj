@@ -79,7 +79,7 @@
     <Compile Include="NodeDefinitions\DownstreamEdgeAttribute.cs" />
     <Compile Include="NodeDefinitions\PropertyAttribute.cs" />
     <Compile Include="NodeDefinitions\UpstreamEdgeAttribute.cs" />
-    <Compile Include="NodeDefinitions\INode.cs" />
+    <Compile Include="NodeDefinitions\IEntityNode.cs" />
     <Compile Include="NodeDefinitions\NodeAttribute.cs" />
     <Compile Include="Nodes\AbstractWord.cs" />
     <Compile Include="Nodes\Category.cs" />

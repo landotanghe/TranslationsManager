@@ -25,7 +25,7 @@ namespace TranslatorStore
             var word2 = store.GetWord("koetje");
 
             
-            //RunLoop();
+            RunLoop();
         }
 
         private void RunLoop()
