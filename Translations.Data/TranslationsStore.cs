@@ -31,9 +31,11 @@ namespace Translations.Data
 
         public Word GetWord(string word)
         {
-            return (new CypherQueryBuilder<Word>())
+            var result = (new CypherQueryBuilder<Word>())
                 .Match(w => w.Name == word)
-                .FirstOrDefault();
+                .ToList();//.FirstOrDefault();
+
+            return result.FirstOrDefault();
         }
 
         public Word GetWord3(string word)

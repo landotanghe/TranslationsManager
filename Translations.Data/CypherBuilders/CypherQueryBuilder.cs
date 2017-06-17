@@ -32,22 +32,39 @@ namespace Translations.Data.CypherBuilders
             return this;
         }
 
+        public List<T> ToList()
+        {
+            var queryResult = GetQueryResult();
+            var entities = new List<T>();
+            foreach(var node in queryResult)
+            {
+                entities.Add(_returner.FillKnownProperties<T>(node));
+            }
+            return entities;
+        }
+
         public T FirstOrDefault()
         {
-            var variableName = "myWord";
-            _returner.ReturnEntireClass<T>(variableName);
-
-            string matchQuery = String.Join(" ",_matchers.Select(m => m.ToString()));
-            string returnQuery = _returner.ToString();
-
-            var query = $"{matchQuery}{returnQuery}";
-            var queryResult = ExecueQuery(query, _argumentBuilder.GetArguments());
+            var queryResult = GetQueryResult();
             var firstNode = queryResult.FirstOrDefault();
             if (firstNode == null)
                 return default(T);
 
             var resultEntity = _returner.FillKnownProperties<T>(firstNode);
             return resultEntity;
+        }
+
+        private IStatementResult GetQueryResult()
+        {
+            var variableName = "myWord";
+            _returner.ReturnEntireClass<T>(variableName);
+
+            string matchQuery = String.Join(" ", _matchers.Select(m => m.ToString()));
+            string returnQuery = _returner.ToString();
+
+            var query = $"{matchQuery}{returnQuery}";
+            var queryResult = ExecueQuery(query, _argumentBuilder.GetArguments());
+            return queryResult;
         }
 
         private IStatementResult ExecueQuery(string query, params Argument[] arguments)
