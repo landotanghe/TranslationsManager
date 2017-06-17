@@ -1,6 +1,7 @@
 ﻿using Neo4j.Driver.V1;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Linq.Expressions;
 using Translations.Data.NodeDefinitions;
@@ -67,19 +68,34 @@ namespace Translations.Data.CypherBuilders
             return queryResult;
         }
 
-        private IStatementResult ExecueQuery(string query, params Argument[] arguments)
+        private static IStatementResult ExecueQuery(string query, params Argument[] arguments)
         {
             var dictionary = arguments.ToDictionary(arg => arg.Name, arg => arg.Value);
             return ExecueQuery(query, dictionary);
         }
 
-        private IStatementResult ExecueQuery(string query, Dictionary<string, object> arguments)
+        private static IStatementResult ExecueQuery(string query, Dictionary<string, object> arguments)
         {
-            using (var driver = GraphDatabase.Driver("bolt://localhost:7687", AuthTokens.Basic("neo4j", "test")))
+            var uri = ConfigurationManager.AppSettings["database.url"];
+            var username = ConfigurationManager.AppSettings["database.username"];
+            var password = ConfigurationManager.AppSettings["database.password"];
+            using (var driver = GraphDatabase.Driver(uri, AuthTokens.Basic(username, password)))
             using (var session = driver.Session())
             {
                 var result = session.Run(query, arguments);
                 return result;
+            }
+        }
+
+        public static void DeleteAll()
+        {
+            var uri = ConfigurationManager.AppSettings["database.url"];
+            var username = ConfigurationManager.AppSettings["database.username"];
+            var password = ConfigurationManager.AppSettings["database.password"];
+            using (var driver = GraphDatabase.Driver(uri, AuthTokens.Basic(username, password)))
+            using (var session = driver.Session())
+            {
+                var result = session.Run("MATCH (n) DETACH DELETE n");
             }
         }
     }

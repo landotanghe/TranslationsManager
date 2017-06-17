@@ -4,15 +4,22 @@ using Translator.Shared;
 using System.Linq;
 using Translations.Data.Nodes;
 using Translations.Data.CypherBuilders;
+using System;
 
 namespace Translations.Data
 {
     public class TranslationsStore
     {
         private Language _baseLanguage;
-        public TranslationsStore(Language baseLanguage)
+        private string _connection;
+        private string _login;
+        private string _password;
+        public TranslationsStore(Language baseLanguage, string connection, string login, string password)
         {
             _baseLanguage = baseLanguage;
+            _connection = connection;
+            _login = login;
+            _password = password;
         }
 
         public void AddTranslation(string word, string translation, Language language)
@@ -26,18 +33,18 @@ namespace Translations.Data
                 CreateTranslation(translation, language);
             }
             
-             Link(word, translation, language);
+            Link(word, translation, language);
         }
 
         public Word GetWord(string word)
         {
             var result = (new CypherQueryBuilder<Word>())
                 .Match(w => w.Name == word)
-                .ToList();//.FirstOrDefault();
+                .FirstOrDefault();
 
-            return result.FirstOrDefault();
+            return result;
         }
-
+        
         public List<Word> GetWords(List<string> words)
         {
             var result = (new CypherQueryBuilder<Word>())
@@ -56,13 +63,25 @@ namespace Translations.Data
             Link(category, words);
         }
 
-        public IEnumerable<string> GetWordsInCategory(string name)
+        public IEnumerable<Word> GetWordsInCategory(string name)
         {
-            var result = ExecueQuery("MATCH (word:Word)-[:IsPartOf]->(category:Category { name: {name}})"
-                + "RETURN word.name",
-                Arg("name", name)); // && w.Category.Name == word)
+            if (1 == 1)
+            {
+                var result = (new CypherQueryBuilder<Word>())
+                    .Match(w => w.Category.Name == name)
+                    .ToList();
 
-            return result.Select(r => r[0].ToString()).ToList();
+                return result;
+            }
+            else
+            {
+                var result = ExecueQuery("MATCH (word:Word)-[:IsPartOf]->(category:Category { name: {name}})"
+                    + "RETURN word.name",
+                    Arg("name", name)); // && w.Category.Name == word)
+
+                return null;
+                //return result.Select(r => r[0].ToString()).ToList();
+            }
         }
 
         private void Link(string category, string[] words)
@@ -160,7 +179,7 @@ namespace Translations.Data
 
         private IStatementResult ExecueQuery(string query, Dictionary<string, object> arguments)
         {
-            using (var driver = GraphDatabase.Driver("bolt://localhost:7687", AuthTokens.Basic("neo4j", "test")))
+            using (var driver = GraphDatabase.Driver(_connection, AuthTokens.Basic(_login, _password)))
             using (var session = driver.Session())
             {
                 var result = session.Run(query, arguments);

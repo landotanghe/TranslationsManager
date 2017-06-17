@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Translations.Data;
 using Translator.Shared;
 
@@ -11,22 +10,28 @@ namespace TranslatorStore
     public class Program
     {
         private bool IsRunning = true;
-        private TranslationsStore store = new TranslationsStore(Language.Dutch);
+        private TranslationsStore store = new TranslationsStore(Language.Dutch, 
+            ConfigurationManager.AppSettings["database.url"],
+            ConfigurationManager.AppSettings["database.username"],
+            ConfigurationManager.AppSettings["database.password"]);
 
         public void Run()
         {
             store.AddTranslation("koe", "cow", Language.English);
-            store.AddTranslation("schaap", "sheep", Language.English);   
+            store.AddTranslation("schaap", "sheep", Language.English);
             store.AddTranslation("kip", "chicken", Language.English);
             store.AddTranslation("aap", "monkey", Language.English);
 
             store.Categorise("dieren", "koe", "schaap", "kip");
+            store.Categorise("dieren", "aap");
+
 
             var word = store.GetWord("koe");
             var word2 = store.GetWord("koetje");
             var words = store.GetWords(new List<string> { "koe", "kip", "schaap" });
+            var dieren = store.GetWordsInCategory("dieren");
 
-            
+
             RunLoop();
         }
 
