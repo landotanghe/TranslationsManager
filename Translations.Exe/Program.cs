@@ -18,11 +18,13 @@ namespace TranslatorStore
             store.AddTranslation("koe", "cow", Language.English);
             store.AddTranslation("schaap", "sheep", Language.English);   
             store.AddTranslation("kip", "chicken", Language.English);
+            store.AddTranslation("aap", "monkey", Language.English);
 
             store.Categorise("dieren", "koe", "schaap", "kip");
 
             var word = store.GetWord("koe");
             var word2 = store.GetWord("koetje");
+            var words = store.GetWords(new List<string> { "koe", "kip", "schaap" });
 
             
             RunLoop();

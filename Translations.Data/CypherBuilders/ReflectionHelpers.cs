@@ -14,6 +14,12 @@ namespace Translations.Data.CypherBuilders
             return customAttribute;
         }
 
+        public static Attr GetCustomAttributeForMember<Attr, T>(MemberExpression memberExpression) where Attr : Attribute
+        {
+            var customAttribute = (Attr)memberExpression.Member.GetCustomAttribute(typeof(Attr));
+            return customAttribute;
+        }
+
         public static Attr GetCustomAttributeForBoolean<Attr, T>(Expression<Func<T, bool>> booleanExpression) where Attr : Attribute
         {
             var binExpression = ((BinaryExpression)booleanExpression.Body);

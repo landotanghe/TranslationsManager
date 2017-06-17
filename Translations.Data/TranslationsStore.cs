@@ -38,68 +38,13 @@ namespace Translations.Data
             return result.FirstOrDefault();
         }
 
-        public Word GetWord3(string word)
+        public List<Word> GetWords(List<string> words)
         {
-            var variableName = "myWord";
-            //var argument = Arg("wordValue", word);
+            var result = (new CypherQueryBuilder<Word>())
+               .Match(w => words.Contains(w.Name))
+               .ToList();
 
-            var argumentBuilder = new CypherArgumentBuilder();
-
-            var match = CypherMatchBuilder
-                            .Match<Word>(variableName, argumentBuilder)
-                            .Where((Word w) => w.Name == word) //, argument.Name)
-                            .ToString();
-
-            var @return = CypherReturnBuilder.Create()
-                .AddMember(variableName, (Word w) => w.Name)
-                .AddMember(variableName, (Word w) => w.Language)
-                .ToString();
-
-            var query = $"{match}{@return}";
-
-            var result = ExecueQuery(query, argumentBuilder.GetArguments());
-            var wordRow = result.FirstOrDefault();
-
-            if (wordRow == null)
-                return null;
-
-            return new Word
-            {
-                Name = (string)wordRow[0],
-                Language = (string)wordRow[1]
-            };
-        }
-
-        public Word GetWord2(string word)
-        {
-            var variableName = "myWord";
-            //var argument = Arg("wordValue", word);
-
-            var argumentBuilder = new CypherArgumentBuilder();
-            
-            var match = CypherMatchBuilder
-                            .Match<Word>(variableName, argumentBuilder)
-                            .Where((Word w) => w.Name == word) //, argument.Name)
-                            .ToString();
-
-            var @return = CypherReturnBuilder.Create()
-                .AddMember(variableName, (Word w) => w.Name)
-                .AddMember(variableName, (Word w) => w.Language)
-                .ToString();
-
-            var query = $"{match}{@return}";
-
-            var result = ExecueQuery(query, argumentBuilder.GetArguments());
-            var wordRow = result.FirstOrDefault();
-
-            if (wordRow == null)
-                return null;
-
-            return new Word
-            {
-                Name = (string) wordRow[0],
-                Language = (string) wordRow[1]
-            };
+            return result;
         }
 
         public void Categorise(string category, params string[] words)
@@ -115,7 +60,7 @@ namespace Translations.Data
         {
             var result = ExecueQuery("MATCH (word:Word)-[:IsPartOf]->(category:Category { name: {name}})"
                 + "RETURN word.name",
-                Arg("name", name));
+                Arg("name", name)); // && w.Category.Name == word)
 
             return result.Select(r => r[0].ToString()).ToList();
         }
