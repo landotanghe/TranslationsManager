@@ -56,6 +56,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Neo4jLinqProvider\Neo4jLinqProvider.csproj">
+      <Project>{6e6e8c12-68c7-4f58-83e7-bf4656461e13}</Project>
+      <Name>Neo4jLinqProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Translations.Data\Translations.Data.csproj">
       <Project>{604869b0-39a7-4cbd-a8fd-52e1770ec182}</Project>
       <Name>Translations.Data</Name>
