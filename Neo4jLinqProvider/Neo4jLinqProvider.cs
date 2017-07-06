@@ -27,14 +27,16 @@ namespace Neo4jLinqProvider
 
         public object Execute(Expression expression)
         {
-            return Neo4jQueryContext.Execute(expression, false);
+            Type elementType = TypeSystem.GetElementType(expression.Type);
+            return Neo4jQueryContext.Execute(expression, false, elementType);
         }
 
         public TResult Execute<TResult>(Expression expression)
         {
             bool IsEnumerable = (typeof(TResult).Name == "IEnumerable`1");
 
-            return (TResult)Neo4jQueryContext.Execute(expression, IsEnumerable);
+            Type elementType = typeof(TResult);
+            return (TResult)Neo4jQueryContext.Execute(expression, IsEnumerable, elementType);
         }
     }
 }

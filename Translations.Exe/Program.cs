@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Neo4jLinqProvider;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using Translations.Data;
+using Translations.Data.Nodes;
 using Translator.Shared;
 
 namespace TranslatorStore
@@ -30,6 +32,12 @@ namespace TranslatorStore
             var word2 = store.GetWord("koetje");
             var words = store.GetWords(new List<string> { "koe", "kip", "schaap" });
             var dieren = store.GetWordsInCategory("dieren");
+
+            var wordsQuery = new Neo4jQueryable<Word>();
+            var wordsResult =
+                wordsQuery.Where(w => w.Name == "koe")
+                .FirstOrDefault();
+                    
 
 
             RunLoop();

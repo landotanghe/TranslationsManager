@@ -5,15 +5,19 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translations.Shared", "Translations.Shared\Translations.Shared.csproj", "{70EBB18B-66DC-4A80-A2FA-285E5661B2FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translations.Translator", "Translations.Translator\Translations.Translator.csproj", "{005C836B-8170-41E6-B940-A1BC10923A07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translations.GoogleTranslator", "Translations.Translator\Translations.GoogleTranslator.csproj", "{005C836B-8170-41E6-B940-A1BC10923A07}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translations.Exe", "Translations.Exe\Translations.Exe.csproj", "{5251F1AC-0C1E-4759-8E7E-53351FF28936}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translations.Data", "Translations.Data\Translations.Data.csproj", "{604869B0-39A7-4CBD-A8FD-52E1770EC182}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translations.Data.Test", "Translations.Data.Test\Translations.Data.Test.csproj", "{4751A1C7-8972-4382-8558-9023FA0A977B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translations.CypherBuilder.Test", "Translations.Data.Test\Translations.CypherBuilder.Test.csproj", "{4751A1C7-8972-4382-8558-9023FA0A977B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neo4jLinqProvider", "Neo4jLinqProvider\Neo4jLinqProvider.csproj", "{6E6E8C12-68C7-4F58-83E7-BF4656461E13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translations.CypherBuilder", "Translations.CypherBuilder\Translations.CypherBuilder.csproj", "{962DFDC5-E60F-4633-824F-7F0CA4A68736}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Translations.TranslationsStore", "Translations.TranslationsStore\Translations.TranslationsStore.csproj", "{C7980484-279B-48F3-93DF-C99D4A72F69B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{6E6E8C12-68C7-4F58-83E7-BF4656461E13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E6E8C12-68C7-4F58-83E7-BF4656461E13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E6E8C12-68C7-4F58-83E7-BF4656461E13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{962DFDC5-E60F-4633-824F-7F0CA4A68736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{962DFDC5-E60F-4633-824F-7F0CA4A68736}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{962DFDC5-E60F-4633-824F-7F0CA4A68736}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{962DFDC5-E60F-4633-824F-7F0CA4A68736}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7980484-279B-48F3-93DF-C99D4A72F69B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7980484-279B-48F3-93DF-C99D4A72F69B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7980484-279B-48F3-93DF-C99D4A72F69B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7980484-279B-48F3-93DF-C99D4A72F69B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
