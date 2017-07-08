@@ -34,14 +34,19 @@ namespace TranslatorStore
             var dieren = store.GetWordsInCategory("dieren");
 
             var wordsQuery = new Neo4jQueryable<Word>();
-            var wordsResult =
-                wordsQuery.Where(w => w.Name == "koe")
-                .ToList();
 
             var xx =
                 wordsQuery.Where(w => w.Name == "koe")
                 .FirstOrDefault();
 
+
+            var qsdf =
+                wordsQuery.Where(w => "koe" == w.Name)
+                .FirstOrDefault();
+
+            var wordsResult =
+                wordsQuery.Where(w => w.Name != "koe")
+                .ToList();
 
 
             RunLoop();
