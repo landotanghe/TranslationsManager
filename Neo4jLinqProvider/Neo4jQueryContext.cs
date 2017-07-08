@@ -5,14 +5,18 @@ using System;
 using System.Linq;
 using Translations.Data.NodeDefinitions;
 using System.Collections;
+using System.Linq.Expressions;
+using Neo4jLinqProvider.ExpressionVisitors;
 
 namespace Neo4jLinqProvider
 {
     class Neo4jQueryContext
     {
-        internal static object Execute(System.Linq.Expressions.Expression expression, Type nodeType)
+        internal static object Execute(Expression expression, Type nodeType)
         {
-            var queryResult = ExecueQuery("MATCH (myWord:Word)WHERE myWord.name IN ['koe']RETURN myWord.name, myWord.language", new Dictionary<string, object>());
+            var query = new QueryBuilder(expression).Build();
+
+            var queryResult = ExecueQuery(query.Body, query.Arguments);
             var typedList = typeof(List<>).MakeGenericType(nodeType);
 
             var entities = (IList) Activator.CreateInstance(typedList);

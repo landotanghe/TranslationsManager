@@ -33,7 +33,6 @@ namespace Neo4jLinqProvider
         }
 
         // Queryable's "single value" standard query operators call this method.
-        // It is also called from QueryableTerraServerData.GetEnumerator(). 
         public TResult Execute<TResult>(Expression expression)
         {
             var type = typeof(TResult);

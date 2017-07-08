@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 
-namespace ExpressionVisitors
+namespace Neo4jLinqProvider.ExpressionVisitors
 {
     public abstract class ExpressionVisitor
     {
