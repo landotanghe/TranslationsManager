@@ -4,40 +4,46 @@ using Neo4j.Driver.V1;
 using System;
 using System.Linq;
 using Translations.Data.NodeDefinitions;
+using System.Collections;
 
 namespace Neo4jLinqProvider
 {
     class Neo4jQueryContext
     {
-        internal static object Execute(System.Linq.Expressions.Expression expression, bool IsEnumerable, Type nodeType)
+        internal static object Execute(System.Linq.Expressions.Expression expression, Type nodeType)
         {
             var queryResult = ExecueQuery("MATCH (myWord:Word)WHERE myWord.name IN ['koe']RETURN myWord.name, myWord.language", new Dictionary<string, object>());
             var typedList = typeof(List<>).MakeGenericType(nodeType);
 
-            var entities = Activator.CreateInstance(typedList);
+            var entities = (IList) Activator.CreateInstance(typedList);
             foreach (var queryNode in queryResult)
             {
-                var node = Activator.CreateInstance(nodeType);
-
-                var nodeProperties = nodeType.GetProperties();
-                for(int i = 0; i < queryNode.Keys.Count; i++)
-                {
-                    var queryNodeName = queryNode.Keys[i];
-                    var queryNodeValue = queryNode.Values[queryNodeName];
-
-                    var propertyToSet = nodeProperties
-                        .Where(prop => prop.GetCustomAttributes(true).OfType<PropertyAttribute>()
-                                                            .Any(att => queryNodeName == "myWord." + att.GetName()))
-                        .First();
-                    var propertySetter = propertyToSet.SetMethod;
-                    
-                    propertySetter.Invoke(node, new object[] { queryNodeValue });
-                }
-
-                Console.Write(node);
-                return node;
+                var node = CreateNode(nodeType, queryNode);
+                entities.Add(node);
             }
             return entities;
+        }
+
+        private static object CreateNode(Type nodeType, IRecord queryNode)
+        {
+            var node = Activator.CreateInstance(nodeType);
+
+            var nodeProperties = nodeType.GetProperties();
+            for (int i = 0; i < queryNode.Keys.Count; i++)
+            {
+                var queryNodeName = queryNode.Keys[i];
+                var queryNodeValue = queryNode.Values[queryNodeName];
+
+                var propertyToSet = nodeProperties
+                    .Where(prop => prop.GetCustomAttributes(true).OfType<PropertyAttribute>()
+                                                        .Any(att => queryNodeName == "myWord." + att.GetName()))
+                    .First();
+                var propertySetter = propertyToSet.SetMethod;
+
+                propertySetter.Invoke(node, new object[] { queryNodeValue });
+            }
+
+            return node;
         }
 
         private static IStatementResult ExecueQuery(string query, Dictionary<string, object> arguments)

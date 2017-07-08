@@ -36,8 +36,12 @@ namespace TranslatorStore
             var wordsQuery = new Neo4jQueryable<Word>();
             var wordsResult =
                 wordsQuery.Where(w => w.Name == "koe")
+                .ToList();
+
+            var xx =
+                wordsQuery.Where(w => w.Name == "koe")
                 .FirstOrDefault();
-                    
+
 
 
             RunLoop();
