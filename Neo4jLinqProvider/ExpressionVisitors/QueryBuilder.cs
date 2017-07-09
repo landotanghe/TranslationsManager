@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using Translations.Data.NodeDefinitions;
 
 namespace Neo4jLinqProvider.ExpressionVisitors
 {
@@ -31,7 +29,7 @@ namespace Neo4jLinqProvider.ExpressionVisitors
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            if (m.Arguments.Count == 2) { 
+            if (m.Arguments.Count == 2 && m.Method.DeclaringType == typeof(System.Linq.Queryable) && m.Method.Name == "Where") { 
                 var whereExpression = m.Arguments[1];
                 _where = (new WhereLambdaExpressionEvaluator(_query)).GetWhere(whereExpression);
             }
