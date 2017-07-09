@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Translations.Data.NodeDefinitions;
@@ -21,9 +22,19 @@ namespace Neo4jLinqProvider.ExpressionVisitors
         {
             Visit(expression);
 
-            if (_where == null)
-                throw new NotSupportedException("this expression can't be used in where");
-
+            if (_where == null) {
+                if (_listToContain != null)
+                {
+                    string parameters = String.Join(",", _listToContain
+                        .Select(value => _query.Arguments.AddParameter(value))
+                        .Select(param => "{" + param + "}"));
+                    _where = $"{_variableToContain} IN [{parameters}]";
+                }
+                else
+                {
+                    throw new NotSupportedException("this expression can't be used in where");
+                }
+            }
             return _where;
         }
 
@@ -49,30 +60,63 @@ namespace Neo4jLinqProvider.ExpressionVisitors
             return b;
         }
 
+        private string _variableToContain;
+        private List<string> _listToContain;
+
+        protected override Expression VisitMethodCall(MethodCallExpression m)
+        {
+            //if (m.Method.DeclaringType == typeof(Enumerable) && m.Method.Name == "Contains")
+            //{
+            //    _variableToContain = m.Arguments[1];
+            //}
+            Console.WriteLine("method call expression node");
+            return base.VisitMethodCall(m);
+        }
+
         protected override Expression VisitMemberAccess(MemberExpression m)
         {
-            var propertyAttribute = (PropertyAttribute)m.Member.GetCustomAttributes(typeof(PropertyAttribute), true).Single();
-            var propertyName = propertyAttribute.GetName();
-            //TODO clean up by using separate Visitor class and call that one once for the left part and once for the right 
-            //part and storing the result in the separate visitor class so it can be extracted after visiting the subtree.
-            if (_left == null)
+            var propertyAttribute = (PropertyAttribute)m.Member.GetCustomAttributes(typeof(PropertyAttribute), true).SingleOrDefault();
+
+            if (propertyAttribute != null)
             {
-                _left = "myWord." + propertyName;
+                var propertyName = propertyAttribute.GetName();
+                //TODO clean up by using separate Visitor class and call that one once for the left part and once for the right 
+                //part and storing the result in the separate visitor class so it can be extracted after visiting the subtree.
+                if (_left == null)
+                {
+                    _left = "myWord." + propertyName;
+                }
+                else
+                {
+                    _right = "myWord." + propertyName;
+                }
+                _variableToContain = "myWord." + propertyName;
             }
             else
             {
-                _right = "myWord." + propertyName;
+                var values = (object[]) GetValue(m);
+                _listToContain = values.Select(v => v.ToString()).ToList();
             }
 
             return base.VisitMemberAccess(m);
         }
 
+        private object GetValue(MemberExpression member)
+        {
+            var objectMember = Expression.Convert(member, typeof(object));
+            var getterLambda = Expression.Lambda<Func<object>>(objectMember);
+            var getter = getterLambda.Compile();
+
+            return getter();
+        }
+
+
+
         private int parameterIndex = 0;
 
         protected override Expression VisitConstant(ConstantExpression c)
         {
-            var parameterName = "P" + parameterIndex++;
-            _query.Arguments.Add(parameterName, c.Value.ToString());
+            var parameterName = _query.Arguments.AddParameter(c.Value);
 
             //TODO clean up by using separate Visitor class and call that one once for the left part and once for the right 
             //part and storing the result in the separate visitor class so it can be extracted after visiting the subtree.

@@ -16,7 +16,7 @@ namespace Neo4jLinqProvider
         {
             var query = new QueryBuilder(expression).Build();
 
-            var queryResult = ExecueQuery(query.Body, query.Arguments);
+            var queryResult = ExecueQuery(query.Body, query.Arguments.GetDictionary());
             var typedList = typeof(List<>).MakeGenericType(nodeType);
 
             var entities = (IList) Activator.CreateInstance(typedList);

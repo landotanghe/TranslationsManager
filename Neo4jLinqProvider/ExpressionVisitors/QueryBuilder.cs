@@ -16,7 +16,7 @@ namespace Neo4jLinqProvider.ExpressionVisitors
             _query = new Query
             {
                 Body = null,
-                Arguments = new Dictionary<string, object>()
+                Arguments = new Arguments()
             };
         }
 
@@ -53,6 +53,28 @@ namespace Neo4jLinqProvider.ExpressionVisitors
     public class Query
     {
         public string Body { get; set; }
-        public Dictionary<string, object> Arguments { get; set; }
+        public Arguments Arguments { get; set; }
+    }
+
+    public class Arguments
+    {
+        private int _parameterIndex = 0;
+        private Dictionary<string, object> _argumentsMap = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Adds a parameter with the given value and a automatically determined name
+        /// </summary>
+        /// <param name="value">name assigned the added parameter</param>
+        /// <returns></returns>
+        public string AddParameter(object value)
+        {
+            var parameterName = "P" + _parameterIndex++;
+            _argumentsMap.Add(parameterName, value.ToString());
+            return parameterName;
+        }
+
+        public Dictionary<string, object> GetDictionary() {
+            return _argumentsMap;
+        }
     }
 }
