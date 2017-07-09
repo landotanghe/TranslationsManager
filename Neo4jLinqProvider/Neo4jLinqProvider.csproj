@@ -75,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExpressionVisitors\QueryBuilder.cs" />
+    <Compile Include="ExpressionVisitors\WhereLambdaExpressionEvaluator.cs" />
     <Compile Include="Neo4jLinqProvider.cs" />
     <Compile Include="Neo4jQueryable.cs" />
     <Compile Include="Neo4jQueryContext.cs" />
