@@ -22,17 +22,7 @@ namespace Neo4jLinqProvider.ExpressionVisitors
 
             if (_where == null)
             {
-                if (_listToContain != null)
-                {
-                    string parameters = String.Join(",", _listToContain
-                        .Select(value => _arguments.AddParameter(value))
-                        .Select(param => "{" + param + "}"));
-                    _where = $"{_variableToContain} IN [{parameters}]";
-                }
-                else
-                {
-                    throw new NotSupportedException("this expression can't be used in where");
-                }
+                throw new NotSupportedException("this expression can't be used in where");
             }
             return _where;
         }
@@ -106,6 +96,15 @@ namespace Neo4jLinqProvider.ExpressionVisitors
                 _listToContain = values.Select(v => v.ToString()).ToList();
             }
 
+            if(_variableToContain != null && _listToContain != null)
+            {
+                string parameters = String.Join(",", _listToContain
+                    .Select(value => _arguments.AddParameter(value))
+                    .Select(param => "{" + param + "}"));
+
+                _where = $"{_variableToContain} IN [{parameters}]";
+            }
+
             return base.VisitMemberAccess(m);
         }
 
@@ -117,8 +116,6 @@ namespace Neo4jLinqProvider.ExpressionVisitors
 
             return getter();
         }
-
-
 
         private int parameterIndex = 0;
 

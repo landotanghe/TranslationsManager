@@ -114,8 +114,10 @@ namespace Neo4jLinqProvider.Test
         [TestMethod]
         public void Where_ListContains_Supported()
         {
+
             var names = new[] { "Alice", "Bob" };
             var where = GetWhere(x => names.Contains(x.Name));
+            var log = Log(x => names.Contains(x.Name));
 
             Assert.AreEqual("n0.name IN [{P0},{P1}]", where);
             Assert.AreEqual(_arguments["P0"], "Alice");
@@ -134,6 +136,12 @@ namespace Neo4jLinqProvider.Test
         private string GetWhere(Expression<Predicate<DummyNode>> expression)
         {
             return _evaluator.GetWhere(expression);
+        }
+
+        private string  Log(Expression<Predicate<DummyNode>> expression)
+        {
+            var expressionLogVisitor = new ExpressionLogVisitor();
+            return expressionLogVisitor.Log(expression, 50);
         }
 
         private class DummyNode
