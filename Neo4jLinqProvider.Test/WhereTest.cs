@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Neo4jLinqProvider.ExpressionVisitors;
 using System.Linq.Expressions;
 using Translations.Data.NodeDefinitions;
+using System.Linq;
 
 namespace Neo4jLinqProvider.Test
 {
@@ -18,7 +19,7 @@ namespace Neo4jLinqProvider.Test
             _arguments = new Arguments();
             _evaluator = new WhereLambdaExpressionEvaluator(_arguments);
         }
-        
+
         [TestMethod]
         public void Where_Equality_Supported()
         {
@@ -26,6 +27,16 @@ namespace Neo4jLinqProvider.Test
 
             Assert.AreEqual("n0.name = {P0}", where);
             Assert.AreEqual(_arguments["P0"], "John");
+        }
+
+        [TestMethod]
+        public void Where_Equality_And_Equality_Supported()
+        {
+            var where = GetWhere(x => x.Name == "John" && x.Age == 10);
+
+            Assert.AreEqual("n0.name = {P0} AND n0.age == {P1}", where);
+            Assert.AreEqual(_arguments["P0"], "John");
+            Assert.AreEqual(_arguments["P1"], "10");
         }
 
         [TestMethod]
@@ -46,7 +57,7 @@ namespace Neo4jLinqProvider.Test
             Assert.AreEqual("n0.name <> {P0}", where);
             Assert.AreEqual(_arguments["P0"], "John");
         }
-        
+
         [TestMethod]
         public void Where_LessThan_Supported()
         {
@@ -98,6 +109,19 @@ namespace Neo4jLinqProvider.Test
 
             Assert.AreEqual("n0.isForeign AND n0.isHealthy", where);
         }
+
+
+        [TestMethod]
+        public void Where_ListContains_Supported()
+        {
+            var names = new[] { "Alice", "Bob" };
+            var where = GetWhere(x => names.Contains(x.Name));
+
+            Assert.AreEqual("n0.name IN [{P0},{P1}]", where);
+            Assert.AreEqual(_arguments["P0"], "Alice");
+            Assert.AreEqual(_arguments["P1"], "Bob");
+        }
+
 
         [TestMethod]
         public void Where_BooleanConstant_Supported()
