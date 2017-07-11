@@ -27,6 +27,16 @@ namespace Neo4jLinqProvider.Test
             Assert.AreEqual("n0.name = {P0}", where);
             Assert.AreEqual(_arguments["P0"], "John");
         }
+        
+        [TestMethod]
+        public void Where_Equality_And_Equality_Supported()
+        {
+            var where = GetWhere(x => x.Name == "John" && x.Age == 10);
+
+            Assert.AreEqual("n0.name = {P0} AND n0.age == {P1}", where);
+            Assert.AreEqual(_arguments["P0"], "John");
+            Assert.AreEqual(_arguments["P1"], "10");
+        }
 
         [TestMethod]
         public void Where_Equality_WithVariable_Supported()
