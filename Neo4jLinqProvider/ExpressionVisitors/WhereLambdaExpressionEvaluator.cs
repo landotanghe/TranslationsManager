@@ -10,8 +10,6 @@ namespace Neo4jLinqProvider.ExpressionVisitors
     {
         private Arguments _arguments;
         private string _where = null;
-        private string _left = null;
-        private string _right = null;
 
         public WhereLambdaExpressionEvaluator(Arguments arguments)
         {
@@ -22,7 +20,8 @@ namespace Neo4jLinqProvider.ExpressionVisitors
         {
             Visit(expression);
 
-            if (_where == null) {
+            if (_where == null)
+            {
                 if (_listToContain != null)
                 {
                     string parameters = String.Join(",", _listToContain
@@ -41,8 +40,10 @@ namespace Neo4jLinqProvider.ExpressionVisitors
         protected override Expression VisitBinary(BinaryExpression b)
         {
             Console.WriteLine("binary expression node");
-            Expression left = this.Visit(b.Left);
-            Expression right = this.Visit(b.Right);
+            var leftVisitor = new WhereLambdaExpressionEvaluator(_arguments);
+            var rightVisitor = new WhereLambdaExpressionEvaluator(_arguments);
+            var _left = leftVisitor.GetWhere(b.Left);
+            var _right = leftVisitor.GetWhere(b.Right);
 
             if (b.NodeType == ExpressionType.Equal)
             {
@@ -51,7 +52,8 @@ namespace Neo4jLinqProvider.ExpressionVisitors
             else if (b.NodeType == ExpressionType.NotEqual)
             {
                 _where = $"{_left} <> {_right}";
-            }else if(b.NodeType == ExpressionType.GreaterThan)
+            }
+            else if (b.NodeType == ExpressionType.GreaterThan)
             {
                 _where = $"{_left} > {_right}";
             }
@@ -95,21 +97,12 @@ namespace Neo4jLinqProvider.ExpressionVisitors
             if (propertyAttribute != null)
             {
                 var propertyName = propertyAttribute.GetName();
-                //TODO clean up by using separate Visitor class and call that one once for the left part and once for the right 
-                //part and storing the result in the separate visitor class so it can be extracted after visiting the subtree.
-                if (_left == null)
-                {
-                    _left = "n0." + propertyName;
-                }
-                else
-                {
-                    _right = "n0." + propertyName;
-                }
+                _where = "n0." + propertyName;
                 _variableToContain = "n0." + propertyName;
             }
             else
             {
-                var values = (object[]) GetValue(m);
+                var values = (object[])GetValue(m);
                 _listToContain = values.Select(v => v.ToString()).ToList();
             }
 
@@ -135,14 +128,7 @@ namespace Neo4jLinqProvider.ExpressionVisitors
 
             //TODO clean up by using separate Visitor class and call that one once for the left part and once for the right 
             //part and storing the result in the separate visitor class so it can be extracted after visiting the subtree.
-            if (_left == null)
-            {
-                _left = "{" + parameterName + "}";
-            }
-            else
-            {
-                _right = "{" + parameterName + "}";
-            }
+            _where = "{" + parameterName + "}";
             return base.VisitConstant(c);
         }
     }
