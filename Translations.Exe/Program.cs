@@ -36,14 +36,14 @@ namespace TranslatorStore
             var wordsQuery = new Neo4jQueryable<Word>();
 
 
-            string[] test = { "koe", "schaap"};
-            var qsdfdf = wordsQuery
-                .Where(x => test.Contains(x.Name))
-                .ToList();
+            //string[] test = { "koe", "schaap"};
+            //var qsdfdf = wordsQuery
+            //    .Where(x => test.Contains(x.Name))
+            //    .ToList();
 
-            //var xx =
-            //    wordsQuery.Where(w => w.Name == "koe")
-            //    .FirstOrDefault();
+            var xx =
+                wordsQuery.Where(w => w.Name == "koe")
+                .FirstOrDefault();
 
             //var qsdf =
             //    wordsQuery.Where(w => "koe" == w.Name)

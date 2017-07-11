@@ -16,7 +16,7 @@ namespace Neo4jLinqProvider
         {
             var query = new QueryBuilder(expression).Build();
 
-            var queryResult = ExecueQuery(query.Body, query.Arguments.GetDictionary());
+            var queryResult = ExecueQuery(query.Body, query.Arguments);
             var typedList = typeof(List<>).MakeGenericType(nodeType);
 
             var entities = (IList) Activator.CreateInstance(typedList);
@@ -50,7 +50,7 @@ namespace Neo4jLinqProvider
             return node;
         }
 
-        private static IStatementResult ExecueQuery(string query, Dictionary<string, object> arguments)
+        private static IStatementResult ExecueQuery(string query, Arguments arguments)
         {
             var uri = ConfigurationManager.AppSettings["database.url"];
             var username = ConfigurationManager.AppSettings["database.username"];

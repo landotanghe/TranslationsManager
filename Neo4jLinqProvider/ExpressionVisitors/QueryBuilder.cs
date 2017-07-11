@@ -31,7 +31,7 @@ namespace Neo4jLinqProvider.ExpressionVisitors
         {
             if (m.Arguments.Count == 2 && m.Method.DeclaringType == typeof(System.Linq.Queryable) && m.Method.Name == "Where") { 
                 var whereExpression = m.Arguments[1];
-                _where = (new WhereLambdaExpressionEvaluator(_query)).GetWhere(whereExpression);
+                _where = (new WhereLambdaExpressionEvaluator(_query.Arguments)).GetWhere(whereExpression);
             }
             Console.WriteLine("method call expression node");
             return base.VisitMethodCall(m);
@@ -73,8 +73,20 @@ namespace Neo4jLinqProvider.ExpressionVisitors
             return parameterName;
         }
 
-        public Dictionary<string, object> GetDictionary() {
-            return _argumentsMap;
+        public object this[string index]
+        {
+            get
+            {
+                return _argumentsMap[index];
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                return _argumentsMap.Count;
+            }
         }
     }
 }
