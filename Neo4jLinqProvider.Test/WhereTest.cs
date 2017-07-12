@@ -34,7 +34,18 @@ namespace Neo4jLinqProvider.Test
         {
             var where = GetWhere(x => x.Name == "John" && x.Age == 10);
 
-            Assert.AreEqual("n0.name = {P0} AND n0.age == {P1}", where);
+            Assert.AreEqual("n0.name = {P0} AND n0.age = {P1}", where);
+            Assert.AreEqual(_arguments["P0"], "John");
+            Assert.AreEqual(_arguments["P1"], "10");
+        }
+
+
+        [TestMethod]
+        public void Where_Equality_Or_Equality_Supported()
+        {
+            var where = GetWhere(x => x.Name == "John" || x.Age == 10);
+
+            Assert.AreEqual("n0.name = {P0} OR n0.age = {P1}", where);
             Assert.AreEqual(_arguments["P0"], "John");
             Assert.AreEqual(_arguments["P1"], "10");
         }
@@ -105,7 +116,7 @@ namespace Neo4jLinqProvider.Test
         [TestMethod]
         public void Where_BooleanProperty_And_BooleanProperty_Supported()
         {
-            var where = GetWhere(x => x.IsForeign);
+            var where = GetWhere(x => x.IsForeign && x.IsHealthy);
 
             Assert.AreEqual("n0.isForeign AND n0.isHealthy", where);
         }

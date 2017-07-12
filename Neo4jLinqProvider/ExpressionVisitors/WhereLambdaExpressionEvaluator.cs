@@ -34,37 +34,55 @@ namespace Neo4jLinqProvider.ExpressionVisitors
             var rightVisitor = new WhereLambdaExpressionEvaluator(_arguments);
             var _left = leftVisitor.GetWhere(b.Left);
             var _right = leftVisitor.GetWhere(b.Right);
+            string _operator = GetBinaryOperator(b);
+
+            _where = $"{_left} {_operator} {_right}";
+
+            return b;
+        }
+
+        private static string GetBinaryOperator(BinaryExpression b)
+        {
+            string _operator = null;
 
             if (b.NodeType == ExpressionType.Equal)
             {
-                _where = $"{_left} = {_right}";
+                _operator = "=";
             }
             else if (b.NodeType == ExpressionType.NotEqual)
             {
-                _where = $"{_left} <> {_right}";
+                _operator = "<>";
             }
             else if (b.NodeType == ExpressionType.GreaterThan)
             {
-                _where = $"{_left} > {_right}";
+                _operator = ">";
             }
             else if (b.NodeType == ExpressionType.GreaterThanOrEqual)
             {
-                _where = $"{_left} >= {_right}";
+                _operator = ">=";
             }
             else if (b.NodeType == ExpressionType.LessThan)
             {
-                _where = $"{_left} < {_right}";
+                _operator = "<";
             }
             else if (b.NodeType == ExpressionType.LessThanOrEqual)
             {
-                _where = $"{_left} <= {_right}";
+                _operator = "<=";
+            }
+            else if (b.NodeType == ExpressionType.OrElse)
+            {
+                _operator = "OR";
+            }
+            else if (b.NodeType == ExpressionType.AndAlso)
+            {
+                _operator = "AND";
             }
             else
             {
                 throw new NotImplementedException("operator not supported yet");
             }
 
-            return b;
+            return _operator;
         }
 
         private string _variableToContain;
