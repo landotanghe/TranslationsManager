@@ -38,8 +38,7 @@ namespace Neo4jLinqProvider.Test
             Assert.AreEqual(_arguments["P0"], "John");
             Assert.AreEqual(_arguments["P1"], "10");
         }
-
-
+        
         [TestMethod]
         public void Where_Equality_Or_Equality_Supported()
         {
@@ -141,7 +140,8 @@ namespace Neo4jLinqProvider.Test
         {
             var where = GetWhere(x => true);
 
-            Assert.AreEqual("true", where);
+            Assert.AreEqual("{P0}", where);
+            Assert.AreEqual("True", _arguments["P0"]);
         }
 
         private string GetWhere(Expression<Predicate<DummyNode>> expression)

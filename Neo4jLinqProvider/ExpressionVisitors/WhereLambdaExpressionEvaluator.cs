@@ -108,10 +108,14 @@ namespace Neo4jLinqProvider.ExpressionVisitors
                 _where = "n0." + propertyName;
                 _variableToContain = "n0." + propertyName;
             }
-            else
+            else if(GetValue(m) is object[])
             {
                 var values = (object[])GetValue(m);
                 _listToContain = values.Select(v => v.ToString()).ToList();
+            }else
+            {
+                var parameter = _arguments.AddParameter(GetValue(m));
+                _where = "{" + parameter + "}";
             }
 
             if(_variableToContain != null && _listToContain != null)
