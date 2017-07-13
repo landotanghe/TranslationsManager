@@ -55,6 +55,8 @@ namespace Neo4jLinqProvider.Test
             var name = "John";
             var where = GetWhere(x => x.Name == name);
 
+            var qsdf = Log(x => x.Name == name);
+
             Assert.AreEqual("n0.name = {P0}", where);
             Assert.AreEqual(_arguments["P0"], "John");
         }
@@ -152,7 +154,7 @@ namespace Neo4jLinqProvider.Test
         private string  Log(Expression<Predicate<DummyNode>> expression)
         {
             var expressionLogVisitor = new ExpressionLogVisitor();
-            return expressionLogVisitor.Log(expression, 50);
+            return expressionLogVisitor.Log(expression, 250);
         }
 
         private class DummyNode

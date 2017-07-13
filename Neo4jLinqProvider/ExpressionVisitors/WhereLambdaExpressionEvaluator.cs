@@ -100,6 +100,9 @@ namespace Neo4jLinqProvider.ExpressionVisitors
 
         protected override Expression VisitMemberAccess(MemberExpression m)
         {
+            //if (m.Expression.NodeType == ExpressionType.Constant)
+            //    return base.VisitMemberAccess(m);
+
             var propertyAttribute = (PropertyAttribute)m.Member.GetCustomAttributes(typeof(PropertyAttribute), true).SingleOrDefault();
 
             if (propertyAttribute != null)
@@ -112,10 +115,13 @@ namespace Neo4jLinqProvider.ExpressionVisitors
             {
                 var values = (object[])GetValue(m);
                 _listToContain = values.Select(v => v.ToString()).ToList();
-            }else
+                return m;
+            }
+            else
             {
                 var parameter = _arguments.AddParameter(GetValue(m));
                 _where = "{" + parameter + "}";
+                return m;
             }
 
             if(_variableToContain != null && _listToContain != null)
