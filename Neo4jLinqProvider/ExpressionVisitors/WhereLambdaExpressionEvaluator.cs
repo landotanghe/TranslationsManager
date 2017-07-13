@@ -32,59 +32,81 @@ namespace Neo4jLinqProvider.ExpressionVisitors
             Console.WriteLine("binary expression node");
             var leftVisitor = new WhereLambdaExpressionEvaluator(_arguments);
             var rightVisitor = new WhereLambdaExpressionEvaluator(_arguments);
-            var _left = leftVisitor.GetWhere(b.Left);
-            var _right = leftVisitor.GetWhere(b.Right);
-            string _operator = GetBinaryOperator(b);
+            var left = leftVisitor.GetWhere(b.Left);
+            var right = leftVisitor.GetWhere(b.Right);
+            string @operator = GetBinaryOperator(b);
 
-            _where = $"{_left} {_operator} {_right}";
+            _where = $"{left} {@operator} {right}";
 
             return b;
         }
 
         private static string GetBinaryOperator(BinaryExpression b)
         {
-            string _operator = null;
+            var @operator = GetLogicalOperator(b) ?? GetArithmicOperator(b);
+            if(@operator == null)
+                throw new NotImplementedException("operator not supported yet");
+            return @operator;
+        }
 
+
+        private static string GetLogicalOperator(BinaryExpression b)
+        {
             if (b.NodeType == ExpressionType.Equal)
             {
-                _operator = "=";
+                return "=";
             }
             else if (b.NodeType == ExpressionType.NotEqual)
             {
-                _operator = "<>";
+                return "<>";
             }
             else if (b.NodeType == ExpressionType.GreaterThan)
             {
-                _operator = ">";
+                return ">";
             }
             else if (b.NodeType == ExpressionType.GreaterThanOrEqual)
             {
-                _operator = ">=";
+                return ">=";
             }
             else if (b.NodeType == ExpressionType.LessThan)
             {
-                _operator = "<";
+                return "<";
             }
             else if (b.NodeType == ExpressionType.LessThanOrEqual)
             {
-                _operator = "<=";
+                return "<=";
             }
             else if (b.NodeType == ExpressionType.OrElse)
             {
-                _operator = "OR";
+                return "OR";
             }
             else if (b.NodeType == ExpressionType.AndAlso)
             {
-                _operator = "AND";
+                return "AND";
             }
-            else
-            {
-                throw new NotImplementedException("operator not supported yet");
-            }
-
-            return _operator;
+            return null;
         }
 
+        private static string GetArithmicOperator(BinaryExpression b)
+        {
+            if (b.NodeType == ExpressionType.Add)
+            {
+                return "+";
+            }
+            else if (b.NodeType == ExpressionType.Subtract)
+            {
+                return "-";
+            }
+            else if (b.NodeType == ExpressionType.Multiply)
+            {
+                return "*";
+            }
+            else if (b.NodeType == ExpressionType.Divide)
+            {
+                return "/";
+            }
+            return null;
+        }
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {

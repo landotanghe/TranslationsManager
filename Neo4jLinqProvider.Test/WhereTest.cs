@@ -122,6 +122,115 @@ namespace Neo4jLinqProvider.Test
             Assert.AreEqual("n0.isForeign AND n0.isHealthy", where);
         }
 
+        [TestMethod]
+        public void Where_Int_Property_Multiply_Constant_Supported()
+        {
+            var where = GetWhere(x => x.Age * 10 < 20);
+
+            Assert.AreEqual("n0.age * {P0} < {P1}", where);
+            Assert.AreEqual(_arguments["P0"], "10");
+            Assert.AreEqual(_arguments["P1"], "20");
+        }
+
+        [TestMethod]
+        public void Where_Int_Property_Divide_Constant_Supported()
+        {
+            var where = GetWhere(x => x.Age / 10 < 20);
+
+            Assert.AreEqual("n0.age / {P0} < {P1}", where);
+            Assert.AreEqual(_arguments["P0"], "10");
+            Assert.AreEqual(_arguments["P1"], "20");
+        }
+
+        [TestMethod]
+        public void Where_Int_Property_Minus_Constant_Supported()
+        {
+            var where = GetWhere(x => x.Age - 10 < 20);
+
+            Assert.AreEqual("n0.age - {P0} < {P1}", where);
+            Assert.AreEqual(_arguments["P0"], "10");
+            Assert.AreEqual(_arguments["P1"], "20");
+        }
+
+        [TestMethod]
+        public void Where_Int_Property_Plus_Constant_Supported()
+        {
+            var where = GetWhere(x => x.Age + 10 < 20);
+
+            Assert.AreEqual("n0.age + {P0} < {P1}", where);
+            Assert.AreEqual(_arguments["P0"], "10");
+            Assert.AreEqual(_arguments["P1"], "20");
+        }
+
+        [TestMethod]
+        public void Where_Int_Property_Plus_Variable_Supported()
+        {
+            var adder = 10;
+            var where = GetWhere(x => x.Age + adder < 20);
+
+            Assert.AreEqual("n0.age + {P0} < {P1}", where);
+            Assert.AreEqual(_arguments["P0"], "10");
+            Assert.AreEqual(_arguments["P1"], "20");
+        }
+
+        [TestMethod]
+        public void Where_Int_Constant_Plus_Constant_EvaluatedImmediately()
+        {
+            var where = GetWhere(x => x.Age < 20 + 10);
+
+            Assert.AreEqual("n0.age < {P0}", where);
+            Assert.AreEqual(_arguments["P0"], "30");
+        }
+
+        [TestMethod]
+        public void Where_Int_Constant_Plus_Variable_EvaluatedImmediately()
+        {
+            var adder = 20;
+            var where = GetWhere(x => x.Age < adder + 10);
+
+            Assert.AreEqual("n0.age < {P0}", where);
+            Assert.AreEqual(_arguments["P0"], "30");
+        }
+
+        [TestMethod]
+        public void Where_String_Property_Plus_Constant_Supported()
+        {
+            var where = GetWhere(x => x.Name + "world" == "helloworld");
+
+            Assert.AreEqual("n0.name + {P0} = {P1}", where);
+            Assert.AreEqual(_arguments["P0"], "world");
+            Assert.AreEqual(_arguments["P1"], "helloworld");
+        }
+
+        [TestMethod]
+        public void Where_String_Property_Plus_Variable_Supported()
+        {
+            var adder = "world";
+            var where = GetWhere(x => x.Name + adder == "helloworld");
+
+            Assert.AreEqual("n0.name + {P0} = {P1}", where);
+            Assert.AreEqual(_arguments["P0"], "world");
+            Assert.AreEqual(_arguments["P1"], "helloworld");
+        }
+
+        [TestMethod]
+        public void Where_String_Constant_Plus_Constant_EvaluatedImmediately()
+        {
+            var where = GetWhere(x => x.Name == "hello" + "world");
+
+            Assert.AreEqual("n0.name = {P0}", where);
+            Assert.AreEqual(_arguments["P0"], "helloworld");
+        }
+
+        [TestMethod]
+        public void Where_String_Constant_Plus_Variable_EvaluatedImmediately()
+        {
+            var adder = "world";
+            var where = GetWhere(x => x.Name == "hello" + adder);
+
+            Assert.AreEqual("n0.name = {P0}", where);
+            Assert.AreEqual(_arguments["P0"], "helloworld");
+        }
 
         [TestMethod]
         public void Where_ListContains_Supported()
