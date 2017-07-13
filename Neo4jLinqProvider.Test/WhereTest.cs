@@ -183,9 +183,34 @@ namespace Neo4jLinqProvider.Test
         }
 
         [TestMethod]
+        public void Where_Variable_And_Variable_EvaluatedImmediately()
+        {
+            var a = true;
+            var b = true;
+            var log = Log(x => x.IsForeign == a && b);
+            var where = GetWhere(x => x.IsForeign == a && b);
+
+            Assert.AreEqual("n0.isForeign < {P0}", where);
+            Assert.AreEqual(_arguments["P0"], "True");
+        }
+
+
+        [TestMethod]
+        public void Where_Constant_And_Constant_EvaluatedImmediately()
+        {
+            var log = Log(x => x.IsForeign == true && true);
+            var where = GetWhere(x => x.IsForeign == true && true);
+
+            Assert.AreEqual("n0.isForeign < {P0}", where);
+            Assert.AreEqual(_arguments["P0"], "True");
+        }
+
+
+        [TestMethod]
         public void Where_Int_Constant_Plus_Variable_EvaluatedImmediately()
         {
             var adder = 20;
+            var log = Log(x => x.Age < adder + 10);
             var where = GetWhere(x => x.Age < adder + 10);
 
             Assert.AreEqual("n0.age < {P0}", where);

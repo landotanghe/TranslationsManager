@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Translations.Data.NodeDefinitions;
@@ -24,16 +23,24 @@ namespace Neo4jLinqProvider.ExpressionVisitors
             {
                 throw new NotSupportedException("this expression can't be used in where");
             }
-            return _where;
+
+            var whereToReturn = _where;
+            _where = null;
+            return whereToReturn;
         }
 
         protected override Expression VisitBinary(BinaryExpression b)
         {
             Console.WriteLine("binary expression node");
-            var leftVisitor = new WhereLambdaExpressionEvaluator(_arguments);
-            var rightVisitor = new WhereLambdaExpressionEvaluator(_arguments);
-            var left = leftVisitor.GetWhere(b.Left);
-            var right = leftVisitor.GetWhere(b.Right);
+            var childVisitor = new WhereLambdaExpressionEvaluator(_arguments);
+            var reducer = new BinaryExpressionReduceVisitor();
+
+            var reducedLeft = reducer.Reduce(b.Left);
+            var reducedRight = reducer.Reduce(b.Right);
+
+            var left = childVisitor.GetWhere(reducedLeft);
+            var right = childVisitor.GetWhere(reducedRight);
+
             string @operator = GetBinaryOperator(b);
 
             _where = $"{left} {@operator} {right}";
