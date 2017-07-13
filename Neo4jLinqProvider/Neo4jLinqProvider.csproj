@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExpressionVisitors\CallToContainsVisitor.cs" />
     <Compile Include="ExpressionVisitors\ExpressionLogVisitor.cs" />
     <Compile Include="ExpressionVisitors\QueryBuilder.cs" />
     <Compile Include="ExpressionVisitors\WhereLambdaExpressionEvaluator.cs" />

@@ -362,5 +362,14 @@ namespace Neo4jLinqProvider.ExpressionVisitors
             }
             return iv;
         }
+
+        protected object GetValue(MemberExpression member)
+        {
+            var objectMember = Expression.Convert(member, typeof(object));
+            var getterLambda = Expression.Lambda<Func<object>>(objectMember);
+            var getter = getterLambda.Compile();
+
+            return getter();
+        }
     }
 }

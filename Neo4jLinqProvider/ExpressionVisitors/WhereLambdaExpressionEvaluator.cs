@@ -85,37 +85,22 @@ namespace Neo4jLinqProvider.ExpressionVisitors
             return _operator;
         }
 
-        private string _variableToContain;
-        private List<string> _listToContain;
 
         protected override Expression VisitMethodCall(MethodCallExpression m)
         {
-            //if (m.Method.DeclaringType == typeof(Enumerable) && m.Method.Name == "Contains")
-            //{
-            //    _variableToContain = m.Arguments[1];
-            //}
-            Console.WriteLine("method call expression node");
-            return base.VisitMethodCall(m);
+            var callVisitor = new CallToContainsVisitor(_arguments);
+            _where = callVisitor.GetWhere(m);
+            return m;
         }
 
         protected override Expression VisitMemberAccess(MemberExpression m)
         {
-            //if (m.Expression.NodeType == ExpressionType.Constant)
-            //    return base.VisitMemberAccess(m);
-
             var propertyAttribute = (PropertyAttribute)m.Member.GetCustomAttributes(typeof(PropertyAttribute), true).SingleOrDefault();
 
             if (propertyAttribute != null)
             {
                 var propertyName = propertyAttribute.GetName();
                 _where = "n0." + propertyName;
-                _variableToContain = "n0." + propertyName;
-            }
-            else if(GetValue(m) is object[])
-            {
-                var values = (object[])GetValue(m);
-                _listToContain = values.Select(v => v.ToString()).ToList();
-                return m;
             }
             else
             {
@@ -123,27 +108,9 @@ namespace Neo4jLinqProvider.ExpressionVisitors
                 _where = "{" + parameter + "}";
                 return m;
             }
-
-            if(_variableToContain != null && _listToContain != null)
-            {
-                string parameters = String.Join(",", _listToContain
-                    .Select(value => _arguments.AddParameter(value))
-                    .Select(param => "{" + param + "}"));
-
-                _where = $"{_variableToContain} IN [{parameters}]";
-            }
-
             return base.VisitMemberAccess(m);
         }
 
-        private object GetValue(MemberExpression member)
-        {
-            var objectMember = Expression.Convert(member, typeof(object));
-            var getterLambda = Expression.Lambda<Func<object>>(objectMember);
-            var getter = getterLambda.Compile();
-
-            return getter();
-        }
 
         private int parameterIndex = 0;
 

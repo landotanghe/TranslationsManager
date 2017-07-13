@@ -53,9 +53,9 @@ namespace Neo4jLinqProvider.Test
         public void Where_Equality_WithVariable_Supported()
         {
             var name = "John";
+            var qsdf = Log(x => x.Name == name);
             var where = GetWhere(x => x.Name == name);
 
-            var qsdf = Log(x => x.Name == name);
 
             Assert.AreEqual("n0.name = {P0}", where);
             Assert.AreEqual(_arguments["P0"], "John");
