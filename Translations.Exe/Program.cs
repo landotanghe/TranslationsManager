@@ -12,10 +12,7 @@ namespace TranslatorStore
     public class Program
     {
         private bool IsRunning = true;
-        private TranslationsStore store = new TranslationsStore(Language.Dutch, 
-            ConfigurationManager.AppSettings["database.url"],
-            ConfigurationManager.AppSettings["database.username"],
-            ConfigurationManager.AppSettings["database.password"]);
+        private TranslationsStore store = new TranslationsStore(Language.Dutch);
 
         public void Run()
         {
