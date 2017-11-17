@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 using System.Threading.Tasks;
 using Translations.DataLayer.Dto;
+using Translations.DataLayer.Repository;
 
 namespace Translations.DataLayer
 {
@@ -20,7 +23,6 @@ namespace Translations.DataLayer
         {
             var wordDto = new Word
             {
-                Id = Guid.NewGuid(),
                 Description = description,
                 Translations = new List<TranslatedWord> {
                     new TranslatedWord
@@ -38,5 +40,22 @@ namespace Translations.DataLayer
                 await context.SaveChangesAsync();
             }
         }
+        
+        public async Task<IEnumerable<Definition>> GetDefinitions(string word)
+        {
+            using (var context = new TranslationContext())
+            {
+                var definitions = await context.TranslatedWords
+                    .Where(t => t.Value == word)
+                    .Select( t => new Definition
+                    {
+                        Word = t.Value,
+                        Description = t.Description,
+                        LanguageIso3 = t.LanguageIso3
+                    })
+                    .ToListAsync();
+                return definitions;
+            }
+        }        
     }
 }

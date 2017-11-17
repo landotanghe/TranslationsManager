@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Translations.DataLayer;
 
 namespace TranslatorStore
@@ -12,6 +14,8 @@ namespace TranslatorStore
             while (true)
             {
                 var repo = new TranslationsRepository();
+                var defs = repo.GetDefinitions("cow").Result;
+                Console.WriteLine(defs.Count());
                 repo.AddNewWordAsync("eng", "cow", "a foor footed animal that moos").Wait();
             }
         }

@@ -49,9 +49,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\SentenceConfiguration.cs" />
+    <Compile Include="Configuration\TranslatedWordConfiguration.cs" />
+    <Compile Include="Configuration\WordConfiguration.cs" />
     <Compile Include="Dto\Sentence.cs" />
     <Compile Include="Dto\TranslatedWord.cs" />
-    <Compile Include="ITranslationsRepository.cs" />
+    <Compile Include="Migrations\201711172234294_InitialDb.cs" />
+    <Compile Include="Migrations\201711172234294_InitialDb.Designer.cs">
+      <DependentUpon>201711172234294_InitialDb.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Repository\Definition.cs" />
+    <Compile Include="Repository\ITranslationsRepository.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="TranslationContext.cs" />
     <Compile Include="Dto\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,6 +69,11 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201711172234294_InitialDb.resx">
+      <DependentUpon>201711172234294_InitialDb.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -2,7 +2,7 @@
 {
     public class Sentence
     {
-        public TranslatedWord Word { get; set; }
+        public int Id { get; set; }
         public string Value { get; set; }
         public string Source { get; set; }
     }
