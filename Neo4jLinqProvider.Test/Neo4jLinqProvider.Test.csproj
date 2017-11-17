@@ -54,12 +54,6 @@
     <Compile Include="WhereTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Neo4jLinqProvider\Neo4jLinqProvider.csproj">
-      <Project>{6e6e8c12-68c7-4f58-83e7-bf4656461e13}</Project>
-      <Name>Neo4jLinqProvider</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

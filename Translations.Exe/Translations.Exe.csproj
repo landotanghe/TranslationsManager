@@ -48,7 +48,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -76,21 +85,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Neo4jLinqProvider\Neo4jLinqProvider.csproj">
-      <Project>{6e6e8c12-68c7-4f58-83e7-bf4656461e13}</Project>
-      <Name>Neo4jLinqProvider</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Translations.Data\Translations.Data.csproj">
-      <Project>{604869b0-39a7-4cbd-a8fd-52e1770ec182}</Project>
-      <Name>Translations.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Translations.Shared\Translations.Shared.csproj">
-      <Project>{70ebb18b-66dc-4a80-a2fa-285e5661b2fa}</Project>
-      <Name>Translations.Shared</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Translations.TranslationsStore\Translations.TranslationsStore.csproj">
-      <Project>{c7980484-279b-48f3-93df-c99d4a72f69b}</Project>
-      <Name>Translations.TranslationsStore</Name>
+    <ProjectReference Include="..\Translations.DataLayer\Translations.DataLayer.csproj">
+      <Project>{3c451e6e-52e6-4026-b297-f3be9720f9fe}</Project>
+      <Name>Translations.DataLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Translations.Translator\Translations.GoogleTranslator.csproj">
       <Project>{005c836b-8170-41e6-b940-a1bc10923a07}</Project>
