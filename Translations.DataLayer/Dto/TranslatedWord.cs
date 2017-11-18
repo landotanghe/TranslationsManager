@@ -1,5 +1,8 @@
 ﻿namespace Translations.DataLayer.Dto
 {
+    /// <summary>
+    /// Represents the word in a foreign language
+    /// </summary>
     public class TranslatedWord
     {
         public int Id { get; set; }

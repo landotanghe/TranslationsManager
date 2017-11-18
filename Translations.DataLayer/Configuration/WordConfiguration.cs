@@ -16,7 +16,9 @@ namespace Translations.DataLayer.Configuration
 
         private void ConfigurePrimitiveProperties()
         {
+
             Property(word => word.Description).IsOptional();
+            Property(word => word.Value).IsRequired();
         }
 
         private void ConfigureNavigationProperties()

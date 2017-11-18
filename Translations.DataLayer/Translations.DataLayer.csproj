@@ -66,6 +66,10 @@
     <Compile Include="Migrations\201711180803172_Quiz.Designer.cs">
       <DependentUpon>201711180803172_Quiz.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711180813266_WordValue.cs" />
+    <Compile Include="Migrations\201711180813266_WordValue.Designer.cs">
+      <DependentUpon>201711180813266_WordValue.cs</DependentUpon>
+    </Compile>
     <Compile Include="Repository\Definition.cs" />
     <Compile Include="Repository\ITranslationsRepository.cs" />
     <Compile Include="Migrations\Configuration.cs" />
@@ -84,6 +88,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711180803172_Quiz.resx">
       <DependentUpon>201711180803172_Quiz.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711180813266_WordValue.resx">
+      <DependentUpon>201711180813266_WordValue.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
