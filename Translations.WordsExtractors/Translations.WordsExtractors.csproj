@@ -47,7 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CsvTranslationsExtractor.cs" />
     <Compile Include="IWordsExtractor.cs" />
+    <Compile Include="TranslationItem.cs" />
     <Compile Include="WordsExtractor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

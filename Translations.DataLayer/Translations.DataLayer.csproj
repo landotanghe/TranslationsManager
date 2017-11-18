@@ -74,6 +74,10 @@
     <Compile Include="Migrations\201711181655168_TranslatedSentences.Designer.cs">
       <DependentUpon>201711181655168_TranslatedSentences.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711181922470_ViewWordList.cs" />
+    <Compile Include="Migrations\201711181922470_ViewWordList.Designer.cs">
+      <DependentUpon>201711181922470_ViewWordList.cs</DependentUpon>
+    </Compile>
     <Compile Include="Repository\Definition.cs" />
     <Compile Include="Repository\ITranslationsRepository.cs" />
     <Compile Include="Migrations\Configuration.cs" />
@@ -98,6 +102,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711181655168_TranslatedSentences.resx">
       <DependentUpon>201711181655168_TranslatedSentences.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711181922470_ViewWordList.resx">
+      <DependentUpon>201711181922470_ViewWordList.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

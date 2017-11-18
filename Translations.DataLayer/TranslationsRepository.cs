@@ -18,15 +18,57 @@ namespace Translations.DataLayer
             }
         }
 
-        public async Task AddNewWordAsync(string iso3, string word, string description)
+        public async Task AddNewSentence(string iso3, string sentence, string translation, string source)
+        {
+            var sentenceDto = new TranslatedSentence
+            {
+                DemonstratedWords = new List<TranslatedWord>(),
+                Source = source,
+                Translation = translation,
+                Value = sentence,
+                TranslationLanguageIso3 = iso3
+            };
+            
+            using (var context = new TranslationContext())
+            {
+                context.TranslatedSentences.Add(sentenceDto);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task AddNewWordAsync(string iso3, string word, string translation)
         {
             var wordDto = new Word
             {
+                Value = word,
+                Description = null,
+                Translations = new List<TranslatedWord> {
+                    new TranslatedWord
+                    {
+                        Value = translation,
+                        Description = null,
+                        LanguageIso3 = iso3
+                    }
+                }
+            };
+
+            using (var context = new TranslationContext())
+            {
+                context.Words.Add(wordDto);
+                await context.SaveChangesAsync();
+            }
+        }
+
+        public async Task AddNewWordAsync(string iso3, string word, string description, string translation, string translationDescription)
+        {
+            var wordDto = new Word
+            {
+                Value = word,
                 Description = description,
                 Translations = new List<TranslatedWord> {
                     new TranslatedWord
                     {
-                        Value = word,
+                        Value = translation,
                         Description = description,
                         LanguageIso3 = iso3
                     }

@@ -1,140 +1,131 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Translations.DataLayer;
+using Translations.DataLayer.Repository;
+using Translations.WordsExtractors;
 
 namespace TranslatorStore
 {
     public class Program
     {
-        //private bool IsRunning = true;
+        private bool IsRunning = true;
+        private GoogleTranslateApi translator;//= new GoogleTranslateApi();
+        private ITranslationsRepository _translationsRepository = new TranslationsRepository();
+        private CsvTranslationsExtractor _csvTranslationsExtractor = new CsvTranslationsExtractor();
 
         public void Run()
         {
-            while (true)
+            while (IsRunning)
             {
-                var repo = new TranslationsRepository();
-                var defs = repo.GetDefinitions("cow").Result;
-                Console.WriteLine(defs.Count());
-                repo.AddNewWordAsync("eng", "cow", "a foor footed animal that moos").Wait();
+                ProcessCommand();
             }
         }
-        //{
-        //    store.AddTranslation("koe", "cow", Language.English);
-        //    store.AddTranslation("schaap", "sheep", Language.English);
-        //    store.AddTranslation("kip", "chicken", Language.English);
-        //    store.AddTranslation("aap", "monkey", Language.English);
 
-        //    store.Categorise("dieren", "koe", "schaap", "kip");
-        //    store.Categorise("dieren", "aap");
+        private void ProcessCommand()
+        {
+            Console.Write(":) ");
+            var input = Console.ReadLine();
+            var inputParts = input.Split(' ');
 
+            var command = inputParts[0];
+            var arguments = inputParts.Skip(1).ToList();
 
-        //    var word = store.GetWord("koe");
-        //    var word2 = store.GetWord("koetje");
-        //    var words = store.GetWords(new List<string> { "koe", "kip", "schaap" });
-        //    var dieren = store.GetWordsInCategory("dieren");
+            if (command == "quit")
+            {
+                IsRunning = false;
+            }
+            else if (command == "translate")
+            {
+                var word = arguments[0];
+                Translate(translator, word);
+                Console.WriteLine(translator.LatestResult);
+            }else if(command == "csv")
+            {
+                var filePath = arguments[0];
+                using (var fs = File.Open(filePath, FileMode.Open))
+                {
+                    var translations = _csvTranslationsExtractor.GetTranslations(fs);
+                    var sentences = GetSentences(translations);
+                    var words = translations.Except(sentences);
 
-        //    var wordsQuery = new Neo4jQueryable<Word>();
+                    foreach(var word in words)
+                    {
+                        var dutch = GetDutchPart(word);
+                        if (dutch == null)
+                        {
+                            continue;
+                        }
+                        var translatedWords = word.Translations.Where(w => w != dutch);
+                        foreach(var translatedWord in translatedWords)
+                        {
+                            Console.WriteLine($"{translatedWord.LanguageIso3}  {dutch.Word}   {translatedWord.Word}");
+                            _translationsRepository.AddNewWordAsync(translatedWord.LanguageIso3, dutch.Word, translatedWord.Word);
+                        }
+                    }
 
+                    Console.WriteLine("");
+                    Console.WriteLine("");
+                    Console.WriteLine("");
+                    Console.WriteLine("Sentences");
+                    foreach (var word in sentences)
+                    {
+                        var dutch = GetDutchPart(word);
+                        if(dutch == null)
+                        {
+                            continue;
+                        }
+                        var translatedWords = word.Translations.Where(w => w != dutch);
+                        foreach (var translatedWord in translatedWords)
+                        {
+                            Console.WriteLine($"{translatedWord.LanguageIso3}  {dutch.Word}   {translatedWord.Word}");
+                            _translationsRepository.AddNewSentence(translatedWord.LanguageIso3, dutch.Word, translatedWord.Word, "book");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
 
-        //    //string[] test = { "koe", "schaap"};
-        //    //var qsdfdf = wordsQuery
-        //    //    .Where(x => test.Contains(x.Name))
-        //    //    .ToList();
+        private static TranslationPart GetDutchPart(TranslationItem translation)
+        {
+            return translation.Translations.Where(t => t.LanguageIso3 == "nld").FirstOrDefault();
+        }
 
-        //    var xx =
-        //        wordsQuery.Where(w => w.Name == "koe")
-        //        .FirstOrDefault();
+        private static IEnumerable<TranslationItem> GetSentences(IEnumerable<TranslationItem> translations)
+        {
+            Func<TranslationPart, bool> containtsAtLeastToSpaces = 
+                sentence => sentence.Word.Where(c => c == ' ').Count() > 2;
 
-        //    //var qsdf =
-        //    //    wordsQuery.Where(w => "koe" == w.Name)
-        //    //    .FirstOrDefault();
+            var sentences = translations.Where(x => x.Translations.All(containtsAtLeastToSpaces));
+            return sentences;
+        }
 
-        //    //var wordsResult =
-        //    //    wordsQuery.Where(w => w.Name != "koe")
-        //    //    .ToList();
+        private class Command
+        {
+            public Command(string name, Action action)
+            {
+                Name = name;
+            }
+            public string Name { get; }
+            public Action action { get; }
+            public void Execute()
+            {
+                action.Invoke();
+            }
+        }
 
-
-        //    RunLoop();
-        //}
-
-        //private void RunLoop()
-        //{
-        //    using (var translator = new GoogleTranslateApi())
-        //    {
-        //        //store.AddTranslation("koe", "cow", Language.English);
-        //        //store.AddTranslation("schaap", "sheep", Language.English);
-        //        //store.AddTranslation("kip", "chicken", Language.English);
-        //        //store.Categorise("dieren", "koe", "schaap", "kip");
-
-        //        //var dieren = store.GetWordsInCategory("dieren");
-        //        //foreach(var dier in dieren)
-        //        //{
-        //        //    Console.WriteLine(dier);
-        //        //}
-
-
-        //        //Console.Write(store.Test());
-        //        while (IsRunning)
-        //        {
-        //            try
-        //            {
-        //                InputCycle(translator);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                Console.WriteLine(":( command could not be processed", ex);
-        //            }
-        //        }
-        //    }
-        //}
-
-        //private void InputCycle(GoogleTranslateApi translator)
-        //{
-        //    Console.Write(":) ");
-        //    var input = Console.ReadLine();
-        //    var inputParts = input.Split(' ');
-
-        //    var command = inputParts[0];
-        //    var arguments = inputParts.Skip(1).ToList();
-
-        //    if (command == "quit")
-        //    {
-        //        IsRunning = false;
-        //    }
-        //    else if(command == "translate")
-        //    {
-        //        var word = arguments[0];
-        //        Translate(translator, word);
-        //        Console.WriteLine(translator.LatestResult);
-        //    }else if(command == "add")
-        //    {
-        //        var lang = arguments[0];
-        //        var word = arguments[1];
-        //        var translation = arguments[2];
-        //        store.AddTranslation(word, translation, lang.GetEnum());
-        //    }else if(command == "categorise")
-        //    {
-        //        var category = arguments[0];
-        //        var words = arguments.Skip(1).ToArray();
-        //        store.Categorise(category, words);
-        //    }else if(command == "category")
-        //    {
-        //        var category = arguments[0];
-        //        var words = store.GetWordsInCategory(category);
-        //        foreach (var word in words)
-        //        {
-        //            Console.WriteLine(word);
-        //        }
-        //    }
-        //}
-
-        //private static void Translate(GoogleTranslateApi translator, string input)
-        //{
-        //    translator.Clear();
-        //    translator.SetInput(input);
-        //    translator.UpdateTranslation();
-        //}
+        private static void Translate(GoogleTranslateApi translator, string input)
+        {
+            translator.Clear();
+            translator.SetInput(input);
+            translator.UpdateTranslation();
+        }
 
         static void Main(string[] args)
         {

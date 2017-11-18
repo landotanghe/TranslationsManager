@@ -93,6 +93,10 @@
       <Project>{005c836b-8170-41e6-b940-a1bc10923a07}</Project>
       <Name>Translations.GoogleTranslator</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Translations.WordsExtractors\Translations.WordsExtractors.csproj">
+      <Project>{89E5FD17-32CE-4277-AA8A-CC816A3D8375}</Project>
+      <Name>Translations.WordsExtractors</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6">

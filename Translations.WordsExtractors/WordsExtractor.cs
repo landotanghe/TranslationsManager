@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Translations.WordsExtractors
 {
-    public class WordsExtractor
+    public class BookWordsExtractor
     {
         public IEnumerable<string> GetWords(Stream input)
         {
