@@ -1,4 +1,6 @@
-﻿namespace Translations.DataLayer.Dto
+﻿using System.Collections.Generic;
+
+namespace Translations.DataLayer.Dto
 {
     /// <summary>
     /// Represents the word in a foreign language
@@ -11,6 +13,8 @@
         public Word Word { get; set; }
 
         public string Value { get; set; }
-        public string Description { get; set; }        
+        public string Description { get; set; }   
+        
+        public List<TranslatedSentence> Examples { get; set; }     
     }
 }

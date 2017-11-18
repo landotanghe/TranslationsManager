@@ -51,12 +51,12 @@
   <ItemGroup>
     <Compile Include="Configuration\QuestionConfiguration.cs" />
     <Compile Include="Configuration\QuizConfiguration.cs" />
-    <Compile Include="Configuration\SentenceConfiguration.cs" />
+    <Compile Include="Configuration\TranslatedSentenceConfiguration.cs" />
     <Compile Include="Configuration\TranslatedWordConfiguration.cs" />
     <Compile Include="Configuration\WordConfiguration.cs" />
     <Compile Include="Dto\Quiz.cs" />
     <Compile Include="Dto\Question.cs" />
-    <Compile Include="Dto\Sentence.cs" />
+    <Compile Include="Dto\TranslatedSentence.cs" />
     <Compile Include="Dto\TranslatedWord.cs" />
     <Compile Include="Migrations\201711172234294_InitialDb.cs" />
     <Compile Include="Migrations\201711172234294_InitialDb.Designer.cs">
@@ -70,10 +70,14 @@
     <Compile Include="Migrations\201711180813266_WordValue.Designer.cs">
       <DependentUpon>201711180813266_WordValue.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711181655168_TranslatedSentences.cs" />
+    <Compile Include="Migrations\201711181655168_TranslatedSentences.Designer.cs">
+      <DependentUpon>201711181655168_TranslatedSentences.cs</DependentUpon>
+    </Compile>
     <Compile Include="Repository\Definition.cs" />
     <Compile Include="Repository\ITranslationsRepository.cs" />
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="TranslationContext.cs" />
+    <Compile Include="DbContexts\TranslationContext.cs" />
     <Compile Include="Dto\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TranslationsRepository.cs" />
@@ -91,6 +95,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711180813266_WordValue.resx">
       <DependentUpon>201711180813266_WordValue.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711181655168_TranslatedSentences.resx">
+      <DependentUpon>201711181655168_TranslatedSentences.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
