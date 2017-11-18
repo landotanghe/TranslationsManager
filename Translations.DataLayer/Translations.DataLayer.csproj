@@ -49,14 +49,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\QuestionConfiguration.cs" />
+    <Compile Include="Configuration\QuizConfiguration.cs" />
     <Compile Include="Configuration\SentenceConfiguration.cs" />
     <Compile Include="Configuration\TranslatedWordConfiguration.cs" />
     <Compile Include="Configuration\WordConfiguration.cs" />
+    <Compile Include="Dto\Quiz.cs" />
+    <Compile Include="Dto\Question.cs" />
     <Compile Include="Dto\Sentence.cs" />
     <Compile Include="Dto\TranslatedWord.cs" />
     <Compile Include="Migrations\201711172234294_InitialDb.cs" />
     <Compile Include="Migrations\201711172234294_InitialDb.Designer.cs">
       <DependentUpon>201711172234294_InitialDb.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201711180803172_Quiz.cs" />
+    <Compile Include="Migrations\201711180803172_Quiz.Designer.cs">
+      <DependentUpon>201711180803172_Quiz.cs</DependentUpon>
     </Compile>
     <Compile Include="Repository\Definition.cs" />
     <Compile Include="Repository\ITranslationsRepository.cs" />
@@ -73,6 +81,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201711172234294_InitialDb.resx">
       <DependentUpon>201711172234294_InitialDb.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711180803172_Quiz.resx">
+      <DependentUpon>201711180803172_Quiz.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
