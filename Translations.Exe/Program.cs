@@ -42,7 +42,18 @@ namespace TranslatorStore
                 var word = arguments[0];
                 Translate(translator, word);
                 Console.WriteLine(translator.LatestResult);
-            }else if(command == "csv")
+            }
+            else if (command == "list") {
+                var languageIso3 = arguments[0];
+                var length = int.Parse(arguments[1]);
+
+                var translations = _translationsRepository.GetTranslations(languageIso3, length).Result;
+                foreach(var t in translations)
+                {
+                    Console.WriteLine($"{t.Word} = {t.TranslatedWord}");
+                }
+            }
+            else if (command == "csv")
             {
                 var filePath = arguments[0];
                 using (var fs = File.Open(filePath, FileMode.Open))
@@ -51,7 +62,7 @@ namespace TranslatorStore
                     var sentences = GetSentences(translations);
                     var words = translations.Except(sentences);
 
-                    foreach(var word in words)
+                    foreach (var word in words)
                     {
                         var dutch = GetDutchPart(word);
                         if (dutch == null)
@@ -59,7 +70,7 @@ namespace TranslatorStore
                             continue;
                         }
                         var translatedWords = word.Translations.Where(w => w != dutch);
-                        foreach(var translatedWord in translatedWords)
+                        foreach (var translatedWord in translatedWords)
                         {
                             Console.WriteLine($"{translatedWord.LanguageIso3}  {dutch.Word}   {translatedWord.Word}");
                             _translationsRepository.AddNewWordAsync(translatedWord.LanguageIso3, dutch.Word, translatedWord.Word);
@@ -73,7 +84,7 @@ namespace TranslatorStore
                     foreach (var word in sentences)
                     {
                         var dutch = GetDutchPart(word);
-                        if(dutch == null)
+                        if (dutch == null)
                         {
                             continue;
                         }

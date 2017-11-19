@@ -84,7 +84,8 @@
     <Compile Include="DbContexts\TranslationContext.cs" />
     <Compile Include="Dto\Word.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TranslationsRepository.cs" />
+    <Compile Include="Repository\Translation.cs" />
+    <Compile Include="Repository\TranslationsRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

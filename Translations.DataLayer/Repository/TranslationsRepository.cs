@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
@@ -97,6 +98,22 @@ namespace Translations.DataLayer
                     .ToListAsync();
                 return definitions;
             }
-        }        
+        }
+
+        public async Task<IEnumerable<Translation>> GetTranslations(string iso3, int count)
+        {
+            using (var context = new TranslationContext())
+            {
+                return await context.TranslatedWords.Where(t => t.LanguageIso3 == iso3)
+                    .Select(translation => new Translation
+                    {
+                        TranslatedWord = translation.Value,
+                        TranslationLanguageIso3 = translation.LanguageIso3,
+                        Word = translation.Word.Value
+                    })
+                    .Take(count)
+                    .ToListAsync();
+            }
+        }
     }
 }

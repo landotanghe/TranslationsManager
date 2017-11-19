@@ -10,5 +10,6 @@ namespace Translations.DataLayer.Repository
         Task<IEnumerable<TranslatedWord>> GetWordsAsync();
         Task<IEnumerable<Definition>> GetDefinitions(string word);
         Task AddNewSentence(string iso3, string sentence, string translation, string source);
+        Task<IEnumerable<Translation>> GetTranslations(string iso3, int count);
     }
 }
